@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Divyansh Fashion | Absolute Luxury & Quality</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for professional icons instead of emojis -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts: Cormorant & Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Three.js for WebGL Shaders -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Cormorant', 'serif'],
+                    },
+                    colors: {
+                        primary: '#1C1917',   // Premium Black
+                        secondary: '#44403C', // Subdued Dark Stone
+                        cta: '#CA8A04',       // Pure Gold
+                        appbg: '#FAFAF9',     // Alabaster/Pearl
+                        apptext: '#0C0A09'    // Rich Ink
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { scroll-behavior: smooth; }
+        
+        /* The 'Liquid Glass' UI Effect */
+        .glass { background: rgba(250, 250, 249, 0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid rgba(28, 25, 23, 0.05); }
+        .dark .glass { background: rgba(28, 25, 23, 0.75); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        
+        /* Premium Background Morph */
+        .morph-bg {
+            animation: morph 12s ease-in-out infinite alternate;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            background: linear-gradient(135deg, rgba(202,138,4,0.08), rgba(68,64,60,0.03));
+            filter: blur(60px);
+        }
+        @keyframes morph {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; transform: scale(1); }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; transform: scale(1.1) translate(30px, -20px); }
+        }
+
+        /* Views */
+        .page-view { display: none; opacity: 0; transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .page-view.active { display: block; opacity: 1; animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Masonry Grid */
+        .masonry-grid { column-count: 2; column-gap: 2rem; }
+        @media (min-width: 1024px) { .masonry-grid { column-count: 3; } }
+        @media (min-width: 1280px) { .masonry-grid { column-count: 4; } }
+        .masonry-item { break-inside: avoid; margin-bottom: 2rem; }
+        
+        /* Hover Dynamics */
+        .product-card .img-wrap img { transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1); }
+        .product-card:hover .img-wrap img { transform: scale(1.08); }
+        
+        /* Hide Scrollbar */
+        .hide-scroll::-webkit-scrollbar { display: none; }
+        .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Gold Texts & Effects */
+        .gold-text { background: linear-gradient(135deg, #CA8A04, #9A6600); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .btn-gold { box-shadow: 0 4px 15px rgba(202, 138, 4, 0.15); transition: all 0.3s ease; }
+        .btn-gold:hover { box-shadow: 0 8px 25px rgba(202, 138, 4, 0.3); transform: translateY(-2px); }
+
+        /* Custom Scrollbar for Cart */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #E5E5E5; border-radius: 4px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: #333; }
+        
+        /* Loader */
+        .loader { border: 2px solid rgba(255,255,255,0.2); border-top-color: #fff; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="bg-appbg text-apptext dark:bg-primary dark:text-appbg font-sans transition-colors duration-500">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass h-24 flex items-center transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 w-full flex justify-between items-center">
+            <a href="#home" class="relative flex items-center gap-2 link cursor-pointer group" data-target="home">
+                <span class="font-serif font-semibold text-3xl tracking-wide uppercase transition-colors group-hover:text-cta dark:text-white dark:group-hover:text-cta">Divyansh<span class="text-cta text-3xl">.</span></span>
+                <span class="absolute -bottom-5 left-0 text-[8px] tracking-[0.3em] font-bold text-cta uppercase opacity-0 group-hover:opacity-100 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 whitespace-nowrap hidden md:block w-auto pointer-events-none">Return to Maison</span>
+            </a>
+
+            <div class="flex items-center gap-5">
+                <button id="theme-btn" class="hover:text-cta transition-colors duration-200 cursor-pointer flex items-center justify-center">
+                    <i class="fas fa-moon dark:hidden text-lg text-secondary"></i>
+                    <i class="fas fa-sun hidden dark:block text-lg text-white/50 hover:text-white"></i>
+                </button>
+                <div class="w-[1px] h-4 bg-primary/20 dark:bg-white/20"></div>
+                <button class="link hover:text-cta transition-colors duration-200 relative flex items-center justify-center cursor-pointer group" data-target="cart">
+                    <span class="text-[11px] font-medium tracking-widest uppercase hidden md:block mr-2 group-hover:text-cta">Bag</span>
+                    <i class="fas fa-shopping-bag text-lg text-secondary dark:text-appbg group-hover:text-cta transition-colors"></i>
+                    <span id="cart-count" class="absolute -top-1.5 -right-2 bg-cta text-white text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full transition-transform scale-0 shadow-sm">0</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-24 min-h-screen">
+        <!-- ======================= -->
+        <!-- VIEW: HOME              -->
+        <!-- ======================= -->
+        <div id="view-home" class="page-view active">
+            
+            <!-- Hero Section -->
+            <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+                <div class="absolute inset-0 -z-10 bg-appbg dark:bg-primary transition-colors duration-500">
+                    <!-- Warp Drive Interactive Shader Background -->
+                    <div id="warp-drive-container" class="absolute inset-0 opacity-30 mix-blend-multiply dark:mix-blend-screen pointer-events-none"></div>
+                </div>
+                
+                <div class="max-w-7xl mx-auto px-6 w-full grid grid-cols-1 lg:grid-cols-12 gap-16 items-center py-12">
+                    <div class="lg:col-span-5 z-10 pt-10 lg:pt-0">
+                        <span class="inline-flex items-center gap-2 py-1.5 px-4 tracking-[0.2em] text-[10px] font-semibold mb-8 border border-primary/10 dark:border-white/10 text-primary dark:text-white rounded-full bg-white/50 dark:bg-black/30 backdrop-blur-sm shadow-sm">
+                            <i class="fas fa-map-marker-alt text-cta"></i> PUNE'S FINEST
+                        </span>
+                        <h1 class="font-serif text-6xl lg:text-7xl xl:text-8xl font-medium leading-[1.05] mb-8 text-primary dark:text-appbg">
+                            Elegance,<br><span class="gold-text italic">Redefined.</span>
+                        </h1>
+                        <p class="text-[15px] text-secondary dark:text-white/60 mb-12 max-w-md font-light leading-relaxed">
+                            Discover an exceptional curation of sophisticated readymade garments and elegant lingerie. Where unparalleled quality meets enduring comfort.
+                        </p>
+                        <a href="#catalog" class="link group cursor-pointer bg-primary text-appbg dark:bg-appbg dark:text-primary px-10 py-5 transition-all duration-500 inline-flex items-center gap-6 tracking-[0.2em] text-[11px] font-bold uppercase rounded-none shadow-2xl hover:shadow-[0_20px_50px_rgba(202,138,4,0.4)] dark:hover:shadow-[0_20px_50px_rgba(202,138,4,0.2)] hover:-translate-y-1 relative overflow-hidden" data-target="catalog">
+                            <span class="relative z-10 flex items-center gap-4 group-hover:text-white transition-colors duration-300">
+                                <span>Explore The Vault</span>
+                                <span class="w-8 h-[1px] bg-appbg dark:bg-primary group-hover:bg-white group-hover:w-12 transition-all duration-500"></span>
+                            </span>
+                            <div class="absolute inset-0 bg-cta transform scale-x-0 origin-left group-hover:scale-x-100 transition-transform duration-500 ease-out z-0"></div>
+                        </a>
+                    </div>
+                    <div class="lg:col-span-7 relative z-10 flex justify-center lg:justify-end">
+                        <div class="relative w-full aspect-[4/5] max-w-lg overflow-hidden bg-black/5 dark:bg-white/5 p-4 border border-black/5 dark:border-white/5 backdrop-blur shadow-2xl">
+                            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="High Fashion" class="w-full h-full object-cover grayscale-[20%]">
+                            
+                            <!-- Floating Authenticity Card -->
+                            <div class="absolute bottom-10 -left-6 bg-appbg dark:bg-primary p-5 shadow-2xl border border-black/5 dark:border-white/5 backdrop-blur-md flex items-center gap-4 animate-[fadeInUp_1s_ease-out_0.5s_both]">
+                                <div class="w-12 h-12 rounded-full border border-cta/30 flex items-center justify-center text-cta bg-cta/10">
+                                    <i class="fas fa-gem text-lg"></i>
+                                </div>
+                                <div>
+                                    <p class="text-[9px] text-secondary dark:text-white/50 font-semibold tracking-[0.2em] uppercase">Guarantee</p>
+                                    <p class="font-serif text-xl tracking-wide dark:text-white">100% Authentic</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- The Philosophy Section -->
+            <section id="about" class="py-32 bg-white dark:bg-[#151311] border-y border-black/5 dark:border-white/5 transition-colors duration-500">
+                <div class="max-w-7xl mx-auto px-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-16 text-center">
+                        <div class="group">
+                            <div class="w-16 h-16 mx-auto border-2 border-primary/10 dark:border-white/10 rounded-full flex items-center justify-center mb-8 group-hover:border-cta group-hover:text-cta transition-colors">
+                                <i class="fas fa-layer-group text-2xl text-secondary dark:text-white/50 group-hover:text-cta"></i>
+                            </div>
+                            <h3 class="font-serif text-2xl mb-4">Masterful Selection</h3>
+                            <p class="font-light text-secondary dark:text-white/60 text-sm leading-relaxed max-w-xs mx-auto">An extensive curation of premium innerwear, activewear, and casuals catering precisely to your taste.</p>
+                        </div>
+                        <div class="group">
+                            <div class="w-16 h-16 mx-auto border-2 border-primary/10 dark:border-white/10 rounded-full flex items-center justify-center mb-8 group-hover:border-cta group-hover:text-cta transition-colors">
+                                <i class="fas fa-concierge-bell text-2xl text-secondary dark:text-white/50 group-hover:text-cta"></i>
+                            </div>
+                            <h3 class="font-serif text-2xl mb-4">Dedicated Service</h3>
+                            <p class="font-light text-secondary dark:text-white/60 text-sm leading-relaxed max-w-xs mx-auto">A proactive, deeply knowledgeable team committed to helping you discover the perfect fit with utmost discretion.</p>
+                        </div>
+                        <div class="group">
+                            <div class="w-16 h-16 mx-auto border-2 border-primary/10 dark:border-white/10 rounded-full flex items-center justify-center mb-8 group-hover:border-cta group-hover:text-cta transition-colors">
+                                <i class="fas fa-tag text-2xl text-secondary dark:text-white/50 group-hover:text-cta"></i>
+                            </div>
+                            <h3 class="font-serif text-2xl mb-4">Accessible Luxury</h3>
+                            <p class="font-light text-secondary dark:text-white/60 text-sm leading-relaxed max-w-xs mx-auto">100% authentic designer apparel delivered at remarkably fair prices without compromising on quality.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Testimonials Grid Slider -->
+            <section class="py-32 bg-appbg dark:bg-primary relative overflow-hidden transition-colors duration-500">
+                <div class="max-w-7xl mx-auto px-6">
+                    <div class="flex flex-col md:flex-row justify-between items-end mb-16 border-b border-black/5 dark:border-white/5 pb-6">
+                        <div>
+                            <h2 class="text-cta font-semibold uppercase tracking-[0.2em] text-[10px] mb-4">The Verdict</h2>
+                            <h3 class="font-serif text-4xl lg:text-5xl">Voices of Elegance</h3>
+                        </div>
+                        <div class="flex gap-4 mt-8 md:mt-0">
+                            <button class="w-10 h-10 border border-black/10 dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-primary transition"><i class="fas fa-chevron-left text-xs"></i></button>
+                            <button class="w-10 h-10 border border-black/10 dark:border-white/10 flex items-center justify-center hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-primary transition"><i class="fas fa-chevron-right text-xs"></i></button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-8 overflow-x-auto pb-10 hide-scroll snap-x" style="scroll-snap-type: x mandatory;" id="reviews-track">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </section>
+        </div>
+
+
+        <!-- ======================= -->
+        <!-- VIEW: CATALOG           -->
+        <!-- ======================= -->
+        <div id="view-catalog" class="page-view py-10 lg:py-20 lg:min-h-screen">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="mb-14 border-b border-primary/10 dark:border-white/10 pb-10 flex flex-col md:flex-row md:items-end justify-between gap-8 animate-[fadeInUp_0.4s_ease-out]">
+                    <div>
+                        <a href="#home" class="link inline-flex items-center gap-3 text-[9px] tracking-[0.25em] uppercase font-bold text-secondary/50 hover:text-cta dark:text-white/40 dark:hover:text-cta transition-colors mb-8 group cursor-pointer" data-target="home">
+                            <i class="fas fa-long-arrow-alt-left transform group-hover:-translate-x-2 transition-transform duration-300 text-sm"></i> Return to Maison
+                        </a>
+                        <h1 class="font-serif text-5xl lg:text-6xl mb-4 dark:text-white">The Collection</h1>
+                        <p class="text-secondary dark:text-white/50 tracking-[0.1em] text-[11px] font-semibold uppercase" id="prod-counter">Loading Vault...</p>
+                    </div>
+                    <div class="relative group">
+                        <input type="text" id="search-input" placeholder="Search the collection..." class="px-0 py-3 bg-transparent border-b-2 border-primary/20 dark:border-white/20 focus:outline-none focus:border-cta dark:focus:border-cta w-full md:w-80 transition-colors placeholder:text-secondary/40 font-light rounded-none text-sm group-hover:border-primary/40 dark:group-hover:border-white/40">
+                        <i class="fas fa-search absolute right-2 top-4 text-secondary/40"></i>
+                    </div>
+                </div>
+                
+                <div class="flex gap-8 mb-12 overflow-x-auto hide-scroll text-[11px] tracking-widest font-semibold uppercase border-b border-black/5 dark:border-white/5 pb-4">
+                    <span class="cursor-pointer text-primary border-b border-primary pb-4 -mb-[17px] dark:text-white dark:border-white whitespace-nowrap">All Pieces</span>
+                    <span class="cursor-pointer text-secondary/50 hover:text-primary dark:text-white/30 dark:hover:text-white transition-colors whitespace-nowrap">Lingerie</span>
+                    <span class="cursor-pointer text-secondary/50 hover:text-primary dark:text-white/30 dark:hover:text-white transition-colors whitespace-nowrap">Nightwear</span>
+                    <span class="cursor-pointer text-secondary/50 hover:text-primary dark:text-white/30 dark:hover:text-white transition-colors whitespace-nowrap">Activewear</span>
+                    <span class="cursor-pointer text-secondary/50 hover:text-primary dark:text-white/30 dark:hover:text-white transition-colors whitespace-nowrap">Casuals</span>
+                </div>
+                
+                <div id="catalog-grid" class="masonry-grid">
+                    <!-- Dynamic Grid -->
+                </div>
+                
+                <div class="mt-20 mb-10 text-center">
+                    <button id="load-btn" class="bg-transparent border border-primary/20 dark:border-white/20 text-primary dark:text-white px-12 py-4 uppercase tracking-[0.2em] text-[10px] font-bold hover:bg-primary hover:text-white dark:hover:bg-white dark:hover:text-primary transition-all duration-300 inline-flex items-center gap-4 cursor-pointer">
+                        <span>Load Additional (<span id="rem-count"></span>)</span>
+                        <div id="loader" class="loader border-primary border-t-transparent hidden dark:border-white dark:border-t-transparent"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ======================= -->
+        <!-- VIEW: CART / CHECKOUT   -->
+        <!-- ======================= -->
+        <div id="view-cart" class="page-view py-10 lg:py-20">
+            <div class="max-w-7xl mx-auto px-6" id="checkout-wrap">
+                <div class="flex items-center gap-4 mb-12">
+                    <button class="link text-secondary dark:text-white/50 hover:text-primary dark:hover:text-white transition-colors" data-target="catalog"><i class="fas fa-arrow-left"></i></button>
+                    <h1 class="font-serif text-4xl lg:text-5xl border-l border-primary/20 dark:border-white/20 pl-4 py-2">Secure Checkout</h1>
+                </div>
+                
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                    <div class="lg:col-span-7 space-y-16">
+                        <div>
+                            <h2 class="font-serif text-2xl flex items-center gap-4 border-b border-primary/10 dark:border-white/10 pb-4 mb-8">
+                                <span class="text-xs font-sans text-cta tracking-widest font-bold">01</span> Your Selections
+                            </h2>
+                            <div id="cart-items" class="space-y-6 max-h-[500px] overflow-y-auto pr-4 custom-scroll"></div>
+                        </div>
+                        <div>
+                            <h2 class="font-serif text-2xl flex items-center justify-between border-b border-primary/10 dark:border-white/10 pb-4 mb-8">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-xs font-sans text-cta tracking-widest font-bold">02</span> Shipping Details
+                                </div>
+                                <span class="text-[9px] tracking-widest uppercase font-bold text-secondary/40 dark:text-white/30 hidden md:inline-block"><i class="fas fa-lock text-cta/70 mx-1"></i> Secure Encrypted</span>
+                            </h2>
+                            <div class="bg-white dark:bg-[#151311] py-10 px-8 lg:px-12 shadow-2xl border border-black/5 dark:border-white/5 relative overflow-hidden">
+                                <div class="absolute -right-20 -top-20 w-64 h-64 bg-cta/10 dark:bg-cta/15 blur-[60px] rounded-full pointer-events-none"></div>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12 relative z-10">
+                                    <div class="relative group">
+                                        <input type="text" id="fname" required class="block px-0 pb-3 pt-5 w-full text-[13px] bg-transparent border-0 border-b border-primary/10 dark:border-white/10 appearance-none focus:outline-none focus:ring-0 focus:border-cta peer uppercase tracking-wider text-primary dark:text-white transition-colors" placeholder=" " />
+                                        <label for="fname" class="absolute text-secondary/50 dark:text-white/40 duration-300 transform -translate-y-5 scale-75 top-5 -z-10 origin-[0] peer-focus:text-cta peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5 uppercase tracking-widest text-[10px] font-bold">First Name</label>
+                                    </div>
+                                    <div class="relative group">
+                                        <input type="text" id="lname" required class="block px-0 pb-3 pt-5 w-full text-[13px] bg-transparent border-0 border-b border-primary/10 dark:border-white/10 appearance-none focus:outline-none focus:ring-0 focus:border-cta peer uppercase tracking-wider text-primary dark:text-white transition-colors" placeholder=" " />
+                                        <label for="lname" class="absolute text-secondary/50 dark:text-white/40 duration-300 transform -translate-y-5 scale-75 top-5 -z-10 origin-[0] peer-focus:text-cta peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5 uppercase tracking-widest text-[10px] font-bold">Last Name</label>
+                                    </div>
+                                    <div class="relative md:col-span-2 group">
+                                        <input type="email" id="email" required class="block px-0 pb-3 pt-5 w-full text-[13px] bg-transparent border-0 border-b border-primary/10 dark:border-white/10 appearance-none focus:outline-none focus:ring-0 focus:border-cta peer tracking-wider text-primary dark:text-white transition-colors" placeholder=" " />
+                                        <label for="email" class="absolute text-secondary/50 dark:text-white/40 duration-300 transform -translate-y-5 scale-75 top-5 -z-10 origin-[0] peer-focus:text-cta peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5 uppercase tracking-widest text-[10px] font-bold">Email Address</label>
+                                        <i class="fas fa-envelope absolute right-2 bottom-3 text-secondary/20 dark:text-white/20 peer-focus:text-cta transition-colors"></i>
+                                    </div>
+                                    <div class="relative md:col-span-2 group">
+                                        <input type="text" id="address" required class="block px-0 pb-3 pt-5 w-full text-[13px] bg-transparent border-0 border-b border-primary/10 dark:border-white/10 appearance-none focus:outline-none focus:ring-0 focus:border-cta peer uppercase tracking-wider text-primary dark:text-white transition-colors" placeholder=" " />
+                                        <label for="address" class="absolute text-secondary/50 dark:text-white/40 duration-300 transform -translate-y-5 scale-75 top-5 -z-10 origin-[0] peer-focus:text-cta peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5 uppercase tracking-widest text-[10px] font-bold">Delivery Address</label>
+                                        <i class="fas fa-map-marker-alt absolute right-2 bottom-3 text-secondary/20 dark:text-white/20 peer-focus:text-cta transition-colors"></i>
+                                    </div>
+                                    <div class="relative group">
+                                        <input type="text" id="city" required class="block px-0 pb-3 pt-5 w-full text-[13px] bg-transparent border-0 border-b border-primary/10 dark:border-white/10 appearance-none focus:outline-none focus:ring-0 focus:border-cta peer uppercase tracking-wider text-primary dark:text-white transition-colors" placeholder=" " />
+                                        <label for="city" class="absolute text-secondary/50 dark:text-white/40 duration-300 transform -translate-y-5 scale-75 top-5 -z-10 origin-[0] peer-focus:text-cta peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5 uppercase tracking-widest text-[10px] font-bold">City</label>
+                                    </div>
+                                    <div class="relative group">
+                                        <input type="text" id="zip" required class="block px-0 pb-3 pt-5 w-full text-[13px] bg-transparent border-0 border-b border-primary/10 dark:border-white/10 appearance-none focus:outline-none focus:ring-0 focus:border-cta peer uppercase tracking-wider text-primary dark:text-white transition-colors" placeholder=" " />
+                                        <label for="zip" class="absolute text-secondary/50 dark:text-white/40 duration-300 transform -translate-y-5 scale-75 top-5 -z-10 origin-[0] peer-focus:text-cta peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-5 uppercase tracking-widest text-[10px] font-bold">Postal Code</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Payment Method Section -->
+                        <div class="mt-8">
+                            <h2 class="font-serif text-2xl flex items-center justify-between border-b border-primary/10 dark:border-white/10 pb-4 mb-8">
+                                <div class="flex items-center gap-4">
+                                    <span class="text-xs font-sans text-cta tracking-widest font-bold">03</span> Payment Method
+                                </div>
+                            </h2>
+                            <div class="space-y-4">
+                                <!-- Cash on Delivery -->
+                                <label class="relative block cursor-pointer group" onclick="document.querySelectorAll('.pay-box').forEach(el=>el.classList.remove('border-cta','shadow-[0_10px_40px_-10px_rgba(202,138,4,0.15)]')); this.querySelector('.pay-box').classList.add('border-cta','shadow-[0_10px_40px_-10px_rgba(202,138,4,0.15)]'); document.querySelectorAll('.pay-dot').forEach(el=>el.classList.remove('scale-100')); this.querySelector('.pay-dot').classList.add('scale-100');">
+                                    <input type="radio" name="payment_method" value="cod" class="hidden" checked>
+                                    <div class="pay-box flex items-start gap-6 p-6 lg:p-8 bg-white dark:bg-[#151311] border border-cta shadow-[0_10px_40px_-10px_rgba(202,138,4,0.15)] transition-all duration-300 relative overflow-hidden">
+                                        <div class="flex-shrink-0 mt-1 relative z-10">
+                                            <div class="w-6 h-6 rounded-full border border-primary/20 dark:border-white/20 flex items-center justify-center">
+                                                <div class="pay-dot w-2 h-2 rounded-full bg-cta scale-100 transition-transform duration-300"></div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 relative z-10">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <h3 class="font-semibold text-[13px] tracking-widest uppercase text-primary dark:text-white">Cash on Delivery</h3>
+                                                <i class="fas fa-hand-holding-usd text-cta text-xl"></i>
+                                            </div>
+                                            <p class="text-[13px] font-light text-secondary/70 dark:text-white/60 leading-relaxed max-w-sm">Pay seamlessly at your doorstep when your absolute luxury collection arrives.</p>
+                                        </div>
+                                    </div>
+                                </label>
+
+                                <!-- Online Payment (Razorpay Ready) -->
+                                <label class="relative block cursor-pointer group" onclick="document.querySelectorAll('.pay-box').forEach(el=>el.classList.remove('border-cta','shadow-[0_10px_40px_-10px_rgba(202,138,4,0.15)]')); this.querySelector('.pay-box').classList.add('border-cta','shadow-[0_10px_40px_-10px_rgba(202,138,4,0.15)]'); document.querySelectorAll('.pay-dot').forEach(el=>el.classList.remove('scale-100')); this.querySelector('.pay-dot').classList.add('scale-100');">
+                                    <input type="radio" name="payment_method" value="online" class="hidden">
+                                    <div class="pay-box flex items-start gap-6 p-6 lg:p-8 bg-white dark:bg-[#151311] border border-black/5 dark:border-white/5 transition-all duration-300 relative overflow-hidden">
+                                        <div class="flex-shrink-0 mt-1 relative z-10">
+                                            <div class="w-6 h-6 rounded-full border border-primary/20 dark:border-white/20 flex items-center justify-center">
+                                                <div class="pay-dot w-2 h-2 rounded-full bg-cta scale-0 transition-transform duration-300"></div>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 relative z-10">
+                                            <div class="flex justify-between items-center mb-2">
+                                                <div class="flex items-center gap-3">
+                                                    <h3 class="font-semibold text-[13px] tracking-widest uppercase text-primary dark:text-white">Razorpay Secure</h3>
+                                                    <span class="px-2 py-0.5 bg-cta/10 text-[9px] uppercase tracking-wider font-bold text-cta">Ready</span>
+                                                </div>
+                                                <div class="flex gap-2 text-cta">
+                                                    <i class="fab fa-cc-visa text-xl"></i><i class="fab fa-cc-mastercard text-xl"></i>
+                                                </div>
+                                            </div>
+                                            <p class="text-[13px] font-light text-secondary/70 dark:text-white/60 leading-relaxed max-w-sm">Pay instantly via Credit Card, UPI, or Netbanking. (UI scaffolding complete)</p>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="lg:col-span-5">
+                        <div class="bg-primary text-white dark:bg-[#1C1A18] p-10 lg:p-12 shadow-2xl sticky top-32 flex flex-col min-h-[500px]">
+                            <h3 class="font-serif text-3xl mb-8">Order Summary</h3>
+                            <div class="space-y-4 flex-1">
+                                <div class="flex justify-between font-light text-sm border-b border-white/10 pb-4"><span class="text-white/70">Subtotal</span> <span id="cart-subtotal" class="font-medium tracking-wide">₹0</span></div>
+                                <div class="flex justify-between font-light text-sm border-b border-white/10 pb-4"><span class="text-white/70">Taxes</span> <span class="font-medium tracking-wide">Included</span></div>
+                                <div class="flex justify-between font-light text-sm border-b border-white/10 pb-4"><span class="text-white/70">Shipping</span> <span class="text-cta tracking-widest text-[10px] uppercase font-bold">Complimentary</span></div>
+                            </div>
+                            <div class="mt-8 mb-10">
+                                <div class="flex justify-between items-end mb-2"><span class="tracking-widest text-xs uppercase text-white/70 font-bold">Total</span><span class="text-4xl font-serif gold-text" id="cart-total">₹0</span></div>
+                                <p class="text-[10px] text-right text-white/40">Includes all applicable duties.</p>
+                            </div>
+                            <button id="pay-btn" class="w-full btn-gold bg-cta text-white uppercase tracking-[0.2em] text-[11px] font-bold py-5 transition-all flex justify-center items-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"><i class="fas fa-lock text-[10px]"></i> <span id="pay-text">Complete Purchase</span><div id="pay-loader" class="loader hidden"></div></button>
+                            <div class="text-center mt-6"><span class="text-[9px] uppercase tracking-widest text-white/30 flex justify-center items-center gap-2"><i class="fab fa-cc-visa text-xl text-white/20"></i><i class="fab fa-cc-mastercard text-xl text-white/20"></i>Secured via 256-Bit SSL</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="success-screen" class="hidden min-h-[60vh] flex-col items-center justify-center text-center animate-[fadeInUp_0.6s]">
+                <div class="w-24 h-24 rounded-full border border-cta/30 flex items-center justify-center text-cta bg-cta/5 mb-8"><i class="fas fa-check text-3xl"></i></div>
+                <h2 class="font-serif text-5xl lg:text-6xl mb-6">Elegance Confirmed.</h2>
+                <p class="text-secondary dark:text-white/60 mb-8 font-light text-lg">Your premium attire allocation is confirmed. Order #<span id="order-id" class="font-medium text-primary dark:text-white"></span></p>
+                <button class="link text-[11px] uppercase tracking-[0.2em] font-bold border-b-2 border-cta text-primary dark:text-white pb-2 hover:text-cta transition-colors cursor-pointer" data-target="catalog">Return To The Collection</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-appbg dark:bg-[#0C0A09] py-16 transition-colors duration-500 border-t border-black/5 dark:border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-8 mb-12">
+                <span class="font-serif font-semibold text-3xl tracking-wide uppercase text-primary dark:text-white">Divyansh<span class="text-cta">.</span></span>
+                <div class="flex gap-6">
+                    <a href="#" class="w-10 h-10 border border-primary/20 dark:border-white/20 rounded-full flex justify-center items-center text-primary dark:text-white hover:border-cta hover:text-cta transition-colors"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="w-10 h-10 border border-primary/20 dark:border-white/20 rounded-full flex justify-center items-center text-primary dark:text-white hover:border-cta hover:text-cta transition-colors"><i class="fab fa-facebook-f"></i></a>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-[0.15em] text-secondary/70 dark:text-white/40 border-t border-black/10 dark:border-white/10 pt-8 font-semibold">
+                <span>&copy; 2026 Divyansh Fashion. All Rights Reserved.</span>
+                <span class="mt-4 md:mt-0">Undri Pisoli, Pune, Maharashtra</span>
+                <span class="mt-4 md:mt-0 text-cta text-right">Crafted with Absolute Luxury</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Fixed WhatsApp Bubble -->
+    <a href="#" class="fixed bottom-8 right-8 z-40 bg-white text-primary dark:bg-[#222] dark:text-white w-14 h-14 rounded-full flex items-center justify-center text-2xl shadow-[0_10px_40px_rgba(0,0,0,0.1)] border border-black/5 dark:border-white/5 hover:scale-110 hover:border-cta hover:text-cta transition-all duration-300 group">
+        <i class="fab fa-whatsapp"></i>
+        <div class="absolute right-16 bg-white dark:bg-[#222] text-xs font-serif whitespace-nowrap py-2 px-4 shadow-xl border border-black/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">Concierge Support</div>
+    </a>
+
+    <!-- UI Modal -->
+    <div id="modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 lg:p-12">
+        <div class="absolute inset-0 bg-primary/40 dark:bg-black/70 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="relative bg-appbg dark:bg-[#151311] w-full max-w-5xl h-full max-h-[700px] flex flex-col md:flex-row overflow-hidden shadow-2xl animate-[fadeInUp_0.5s_ease-out]">
+            <button onclick="closeModal()" class="absolute top-6 right-6 z-10 w-10 h-10 bg-white dark:bg-[#222] shadow rounded-full flex items-center justify-center hover:bg-cta hover:text-white transition-colors duration-200 text-primary dark:text-white border border-black/5 dark:border-white/5"><i class="fas fa-times text-sm"></i></button>
+            <div class="md:w-[45%] bg-white dark:bg-[#1C1A18] flex items-center justify-center border-r border-black/5 dark:border-white/5 p-8 relative">
+                <span id="m-badge" class="absolute top-8 left-8 text-[9px] uppercase tracking-widest font-bold border-b border-cta pb-1 text-primary dark:text-white hidden"></span>
+                <img id="m-img" class="w-full h-full object-contain max-h-[500px]">
+            </div>
+            <div class="md:w-[55%] p-10 lg:p-16 flex flex-col pt-12 overflow-y-auto custom-scroll relative">
+                <span id="m-cat" class="text-[10px] font-bold text-secondary dark:text-white/50 uppercase tracking-[0.2em] mb-4 block"></span>
+                <h2 id="m-title" class="font-serif text-3xl lg:text-4xl mb-4 text-primary dark:text-white leading-tight"></h2>
+                <div class="flex text-cta text-[10px] mb-6 gap-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i> <span class="text-secondary dark:text-white/40 ml-2 tracking-widest">4.8 / 5</span></div>
+                <p class="font-light text-sm text-secondary dark:text-white/60 mb-8 leading-relaxed max-w-md">Crafted with meticulous attention to detail. This signature piece offers a delicate balance of aesthetics and function.</p>
+                <div class="mb-8 border-y border-black/10 dark:border-white/10 py-6">
+                    <p class="text-[10px] uppercase font-bold tracking-widest mb-4">Select Size</p>
+                    <div class="flex gap-3">
+                        <button class="w-10 h-10 border border-primary/20 dark:border-white/20 text-xs font-serif hover:border-cta hover:text-cta transition-colors">S</button>
+                        <button class="w-10 h-10 border border-cta text-cta text-xs font-serif shadow-[0_0_10px_rgba(202,138,4,0.2)]">M</button>
+                        <button class="w-10 h-10 border border-primary/20 dark:border-white/20 text-xs font-serif hover:border-cta hover:text-cta transition-colors">L</button>
+                        <button class="w-10 h-10 border border-primary/20 dark:border-white/20 text-xs font-serif hover:border-cta hover:text-cta transition-colors">XL</button>
+                    </div>
+                </div>
+                <div class="mt-auto flex items-center justify-between">
+                    <p id="m-price" class="font-serif text-3xl gold-text"></p>
+                    <button id="m-add" class="bg-primary text-appbg dark:bg-white dark:text-primary uppercase tracking-[0.15em] text-[11px] font-bold px-10 py-4 hover:bg-cta hover:text-white dark:hover:bg-cta transition-all duration-300 shadow-md flex gap-3 items-center">Add To Bag <i class="fas fa-shopping-bag text-[10px]"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Feedback Toast -->
+    <div id="toast" class="fixed top-24 left-1/2 -translate-x-1/2 transform -translate-y-[150%] opacity-0 transition-all duration-400 z-[120] bg-white text-primary dark:bg-[#222] dark:text-white border border-black/10 dark:border-white/10 px-8 py-4 text-[11px] uppercase font-bold tracking-[0.1em] shadow-xl flex items-center gap-4"><i class="fas fa-check text-cta"></i> <span id="toast-msg">Action Successful</span></div>
+
+    <!-- App Logic -->
+    <script>
+        const formatCurrency = p => `₹${p.toLocaleString('en-IN')}`;
+        const query = s => document.querySelector(s);
+        
+        const reviewsData = [
+            {n:"Monika Khichi", t:"An amazing collection and exquisite depth in brands. Highly appreciated."},
+            {n:"Govind Ravle", t:"Finest apparel available. Well-mannered staff and an owner who ensures perfection."},
+            {n:"SONALY TRISAL", t:"An elegant shopping experience. Genuine premium products with impeccable service."},
+            {n:"Sandhya Mohite", t:"I found my perfect fit here. Exceptional comfort. Will return."},
+            {n:"Anupam Dubey", t:"Helped me find exactly what I needed. Fair rates for absolute luxury."}
+        ];
+
+        const productVault = [
+            { c:'Lingerie', t:'Strapless Comfort Bralette', p:899, i:'https://images.unsplash.com/photo-1616847209176-79ba0d1ebbf6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', b:'Signature' },
+            { c:'Nightwear', t:'Silk Satin Night Dress', p:1499, i:'https://images.unsplash.com/photo-1604085429713-91113264ebce?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', b:'New Arrival' },
+            { c:'Casuals', t:'Essential Cotton Blouse', p:850, i:'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80' },
+            { c:'Innerwear', t:'Seamless Elegance Set (3)', p:1299, i:'https://images.unsplash.com/photo-1526685829672-001ceb83e05a?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80', b:'Trending' }
+        ];
+        
+        const products = Array.from({length: 1000}, (_, i) => {
+            const base = productVault[i % productVault.length];
+            return { id: i+1, title: `${base.t}`, cat: base.c, price: base.p + ((i%4)*150), img: base.i, badge: i<10 ? base.b : null };
+        });
+
+        let cart = JSON.parse(localStorage.getItem('dvf_luxury_cart')) || [];
+        let curLoaded = 0; const PER_PAGE = 12;
+
+        query('#reviews-track').innerHTML = reviewsData.map(r => `
+            <div class="w-[85vw] md:w-[400px] flex-shrink-0 bg-white dark:bg-[#151311] p-10 lg:p-12 border border-black/5 dark:border-white/5 snap-center relative hover:-translate-y-2 transition-all duration-500">
+                <i class="fas fa-quote-left absolute top-8 left-8 text-black/5 dark:text-white/5 text-5xl"></i>
+                <div class="flex gap-1 text-cta text-[10px] mb-6 relative z-10"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                <p class="text-secondary dark:text-white/60 text-sm mb-8 font-light italic leading-loose">"${r.t}"</p>
+                <div class="border-t border-black/10 dark:border-white/10 pt-6 flex items-center gap-4">
+                    <div class="w-10 h-10 rounded-full border border-primary/10 dark:border-white/10 flex justify-center items-center text-primary dark:text-white text-xs font-serif uppercase">${r.n[0]}</div>
+                    <span class="font-serif tracking-wide text-primary dark:text-white text-lg">${r.n}</span>
+                </div>
+            </div>
+        `).join('');
+
+        function runProductsEngine(append = false) {
+            const grid = query('#catalog-grid');
+            if(!append) { grid.innerHTML = ''; curLoaded = 0; }
+            const term = query('#search-input').value.toLowerCase();
+            const filt = products.filter(p => p.title.toLowerCase().includes(term) || p.cat.toLowerCase().includes(term));
+            query('#prod-counter').innerText = `${Math.min(curLoaded+PER_PAGE, filt.length)} OF ${filt.length} ASSETS VIEWING`;
+            const slice = filt.slice(curLoaded, curLoaded + PER_PAGE);
+            slice.forEach((p, idx) => {
+                const el = document.createElement('div');
+                el.className = `product-card masonry-item group cursor-pointer animate-[fadeInUp_0.8s_ease-out_both]`;
+                el.style.animationDelay = `${idx * 0.05}s`;
+                el.onclick = () => showModal(p.id);
+                el.innerHTML = `
+                    <div class="img-wrap relative overflow-hidden bg-white dark:bg-[#161412] mb-6 aspect-[3/4] border border-black/5 dark:border-white/5 group-hover:shadow-2xl transition-all duration-500">
+                        ${p.badge ? `<span class="absolute top-5 left-5 bg-primary text-appbg dark:bg-appbg dark:text-primary text-[8px] uppercase tracking-[0.2em] font-bold px-3 py-2 z-10">${p.badge}</span>`:''}
+                        <img src="${p.img}" class="w-full h-full object-cover filter grayscale-[10%] group-hover:grayscale-0 transition-all duration-700" loading="lazy">
+                        <div class="absolute inset-x-0 bottom-0 p-5 opacity-0 group-hover:opacity-100 transition-all transform translate-y-4 group-hover:translate-y-0">
+                            <button class="w-full bg-white dark:bg-[#222] text-primary dark:text-white uppercase tracking-[0.2em] text-[9px] font-bold py-4 hover:bg-cta hover:text-white transition-colors flex items-center justify-center gap-2 shadow-2xl" onclick="event.stopPropagation(); addCart(${p.id})">Add to Bag <i class="fas fa-plus text-[8px]"></i></button>
+                        </div>
+                    </div>
+                    <div class="px-2">
+                        <span class="text-[9px] uppercase text-secondary/60 dark:text-white/40 tracking-[0.2em] mb-2 font-bold">${p.cat}</span>
+                        <h3 class="font-serif text-2xl mb-2 text-primary dark:text-white group-hover:text-cta transition-colors">${p.title}</h3>
+                        <div class="font-medium text-sm text-secondary dark:text-white/80">${formatCurrency(p.price)}</div>
+                    </div>
+                `;
+                grid.appendChild(el);
+            });
+            curLoaded += slice.length;
+            const left = filt.length - curLoaded;
+            query('#rem-count').innerText = left;
+            query('#load-btn').style.display = left > 0 ? 'inline-flex' : 'none';
+        }
+
+        function updateBadge() { 
+            const b = query('#cart-count'); const count = cart.reduce((acc, c) => acc + c.qty, 0); 
+            b.innerText = count; b.style.transform = count > 0 ? 'scale(1)' : 'scale(0)';
+        }
+        function saveCartLocally() { localStorage.setItem('dvf_luxury_cart', JSON.stringify(cart)); updateBadge(); }
+
+        function addCart(id) {
+            const prod = products.find(x => x.id === id);
+            const exist = cart.find(x => x.id === id);
+            if(exist) exist.qty++; else cart.push({...prod, qty: 1});
+            saveCartLocally(); fireToast("Added to Bag");
+        }
+
+        function adjustQty(id, delta) {
+            const i = cart.findIndex(x => x.id === id);
+            if(i > -1) { cart[i].qty += delta; if(cart[i].qty <= 0) cart.splice(i, 1); saveCartLocally(); refreshCartScreen(); }
+        }
+
+        function refreshCartScreen() {
+            const wrap = query('#cart-items');
+            if(!cart.length){ wrap.innerHTML = '<div class="py-12 text-center text-secondary/50 italic">Your bag is empty.</div>'; query('#pay-btn').disabled = true; }
+            else {
+                query('#pay-btn').disabled = false;
+                wrap.innerHTML = cart.map(p => `
+                    <div class="flex items-center gap-6 py-6 border-b border-black/5 dark:border-white/5 relative group">
+                        <button class="absolute right-0 top-6 text-secondary/40 hover:text-red-500 transition-colors" onclick="adjustQty(${p.id}, -999)"><i class="fas fa-times text-xs"></i></button>
+                        <img src="${p.img}" class="w-24 h-32 object-cover bg-black/5 border border-black/5">
+                        <div class="flex-1">
+                            <span class="text-[8px] uppercase tracking-widest font-bold text-secondary/50 mb-1 block">${p.cat}</span>
+                            <h4 class="font-serif text-xl mb-2">${p.title}</h4>
+                            <div class="text-primary dark:text-white font-medium text-sm mb-4">${formatCurrency(p.price)}</div>
+                            <div class="flex items-center gap-4 text-xs font-bold font-sans">
+                                <button onclick="adjustQty(${p.id}, -1)" class="w-8 h-8 border border-black/10">-</button>
+                                <span>${p.qty}</span>
+                                <button onclick="adjustQty(${p.id}, 1)" class="w-8 h-8 border border-black/10">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            const amt = cart.reduce((acc, c) => acc + (c.price * c.qty), 0);
+            query('#cart-subtotal').innerText = formatCurrency(amt); 
+            query('#cart-total').innerText = formatCurrency(amt);
+        }
+
+        function showModal(id) {
+            const p = products.find(x => x.id === id);
+            query('#m-img').src = p.img; query('#m-title').innerText = p.title; query('#m-cat').innerText = p.cat; query('#m-price').innerText = formatCurrency(p.price);
+            query('#m-badge').style.display = p.badge ? 'block' : 'none';
+            if(p.badge) query('#m-badge').innerText = p.badge;
+            query('#m-add').onclick = () => { addCart(id); closeModal(); };
+            query('#modal').style.display = 'flex';
+        }
+        function closeModal() { query('#modal').style.display = 'none'; }
+        function fireToast(msg) {
+            const t = query('#toast'); query('#toast-msg').innerText = msg;
+            t.style.transform = 'translate(-50%, 0)'; t.style.opacity = '1';
+            setTimeout(() => { t.style.transform = 'translate(-50%, -150%)'; t.style.opacity = '0'; }, 3000);
+        }
+
+        window.navigateView = navigate;
+        function navigate(viewId, scrollTop = true) {
+            document.querySelectorAll('.page-view').forEach(e => e.classList.remove('active'));
+            query('#view-'+viewId).classList.add('active'); 
+            if(scrollTop) window.scrollTo({ top: 0, behavior: 'smooth' });
+            if(viewId === 'cart') refreshCartScreen();
+            if(viewId === 'catalog' && curLoaded === 0) runProductsEngine(false);
+        }
+
+        document.querySelectorAll('.link').forEach(l => {
+            l.addEventListener('click', (e) => { 
+                e.preventDefault(); 
+                navigate(l.getAttribute('data-target')); 
+            });
+        });
+
+        query('#search-input').addEventListener('input', () => runProductsEngine(false));
+        query('#load-btn').onclick = () => runProductsEngine(true);
+        query('#theme-btn').onclick = () => document.documentElement.classList.toggle('dark');
+        query('#pay-btn').onclick = () => {
+            const req = ['fname', 'lname', 'email', 'address', 'city', 'zip'];
+            const missing = req.filter(id => !query('#'+id).value.trim());
+            if (missing.length > 0) {
+                fireToast("Please complete all shipping details.");
+                missing.forEach(id => {
+                    const el = query('#'+id);
+                    el.style.setProperty('border-bottom-color', '#ef4444', 'important');
+                    setTimeout(() => el.style.removeProperty('border-bottom-color'), 2500);
+                });
+                query('#'+missing[0]).focus();
+                return;
+            }
+            const payMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
+            
+            if (payMethod === 'online') {
+                query('#pay-text').innerText = 'Connecting to Razorpay...';
+                query('#pay-loader').style.display='block';
+                setTimeout(() => {
+                    fireToast("Razorpay Checkout Opened! (Mocking success phase...)");
+                    setTimeout(() => {
+                        cart = []; saveCartLocally();
+                        query('#checkout-wrap').style.display = 'none'; query('#success-screen').style.display = 'flex';
+                        query('#order-id').innerText = 'rzp_test_' + Math.floor(100000 + Math.random() * 900000);
+                        query('#pay-text').innerText = 'Complete Purchase';
+                        query('#pay-loader').style.display='none';
+                    }, 2500);
+                }, 800);
+            } else {
+                query('#pay-text').style.display='none'; query('#pay-loader').style.display='block';
+                setTimeout(() => {
+                    cart = []; saveCartLocally();
+                    query('#checkout-wrap').style.display = 'none'; query('#success-screen').style.display = 'flex';
+                    query('#order-id').innerText = Math.floor(100000 + Math.random() * 900000);
+                }, 1500);
+            }
+        };
+
+        // Initialize Warp Drive Shader
+        function initWarpDrive() {
+            const container = document.getElementById('warp-drive-container');
+            if (!container || !window.THREE) return;
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+            renderer.domElement.style.position = "absolute";
+            renderer.domElement.style.top = renderer.domElement.style.left = "0";
+            renderer.domElement.style.width = renderer.domElement.style.height = "100%";
+            const scene = new THREE.Scene(); const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); const clock = new THREE.Clock();
+            const vertexShader = `void main() { gl_Position = vec4(position, 1.0); }`;
+            const fragmentShader = `
+                precision highp float;
+                uniform vec2 iResolution; uniform float iTime; uniform vec2 iMouse;
+                void main() {
+                    vec2 uv = (gl_FragCoord.xy - 0.5 * iResolution.xy) / iResolution.y;
+                    vec2 mouse = (iMouse - 0.5 * iResolution.xy) / iResolution.y;
+                    float t = iTime * 0.5; uv -= mouse;
+                    float r = length(uv) * 0.8;
+                    vec3 finalColor = vec3(0.0); float offset = 0.01;
+                    finalColor.r = pow(fract(0.5 / length(uv + vec2(offset, 0.0)) + t * 2.0), 15.0);
+                    finalColor.g = pow(fract(0.5 / length(uv) + t * 2.0), 15.0);
+                    finalColor.b = pow(fract(0.5 / length(uv - vec2(offset, 0.0)) + t * 2.0), 15.0);
+                    finalColor *= smoothstep(0.0, 0.1, r);
+                    vec3 goldTint = vec3(0.79, 0.54, 0.01);
+                    finalColor = mix(finalColor, finalColor * goldTint * 3.0, 0.8);
+                    gl_FragColor = vec4(finalColor, 1.0);
+                }
+            `;
+            const uniforms = { iTime: { value: 0 }, iResolution: { value: new THREE.Vector2() }, iMouse: { value: new THREE.Vector2(window.innerWidth / 2, window.innerHeight / 2) } };
+            const material = new THREE.ShaderMaterial({ vertexShader, fragmentShader, uniforms });
+            scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
+            const onResize = () => { renderer.setSize(container.clientWidth, container.clientHeight); uniforms.iResolution.value.set(container.clientWidth, container.clientHeight); };
+            window.addEventListener('resize', onResize); onResize();
+            window.addEventListener('mousemove', e => uniforms.iMouse.value.set(e.clientX, container.clientHeight - e.clientY));
+            function animate() { requestAnimationFrame(animate); uniforms.iTime.value = clock.getElapsedTime(); renderer.render(scene, camera); }
+            animate();
+        }
+        window.onload = initWarpDrive;
+        updateBadge();
+        navigate('home');
+    </script>
+</body>
+</html>
+

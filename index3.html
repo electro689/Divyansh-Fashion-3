@@ -1,0 +1,849 @@
+'use client';
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ShoppingCart, Heart, Search, Menu, X, ChevronRight, Star, Zap, Truck, Shield, MessageCircle, Moon, Sun, ChevronLeft, Plus, Minus } from 'lucide-react';
+
+// ============================================================================
+// DESIGN PHILOSOPHY: Premium Minimalism with Sophisticated Motion
+// - Elegant typography hierarchy (Playfair Display for headlines, Poppins for body)
+// - Soft color palette: Charcoal, Cream, Rose Gold accents
+// - Micro-interactions: Smooth hover lifts, magnetic buttons, stagger animations
+// - Glassmorphism cards with subtle gradients
+// - Dark/Light mode with smooth transitions
+// ============================================================================
+
+// Product Data Generator (Scalable to 1000+)
+const generateProducts = (count = 50) => {
+  const categories = ['Dresses', 'Lingerie', 'Tops', 'Bottoms', 'Activewear', 'Nightwear'];
+  const colors = ['Black', 'White', 'Red', 'Navy', 'Blush', 'Gold', 'Emerald', 'Burgundy'];
+  const materials = ['Cotton', 'Silk', 'Lace', 'Polyester', 'Satin', 'Mesh'];
+  
+  // Multiple valid Unsplash image URLs for fashion/women
+  const imageUrls = [
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=600&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500https://images.unsplash.com/photo-1595777707802-c3d5e386c9d9?w=500&h=600&fit=crop&q=80h=600https://images.unsplash.com/photo-1595777707802-c3d5e386c9d9?w=500&h=600&fit=crop&q=80fit=crophttps://images.unsplash.com/photo-1595777707802-c3d5e386c9d9?w=500&h=600&fit=crop&q=80q=80',
+    'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500&h=600&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500https://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80h=600https://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80fit=crophttps://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80q=80',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500https://images.unsplash.com/photo-1595959375944-d28b9bbf0bb1?w=500&h=600&fit=crop&q=80h=600https://images.unsplash.com/photo-1595959375944-d28b9bbf0bb1?w=500&h=600&fit=crop&q=80fit=crophttps://images.unsplash.com/photo-1595959375944-d28b9bbf0bb1?w=500&h=600&fit=crop&q=80q=80',
+    'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500https://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80h=600https://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80fit=crophttps://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80q=80',
+    'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=600&fit=crop&q=80',
+    'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=500https://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80h=600https://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80fit=crophttps://images.unsplash.com/photo-1595847862297-9c5e8c0d6f8d?w=500&h=600&fit=crop&q=80q=80'
+  ];
+  
+  return Array.from({ length: count }, (_, i) => ({
+    id: i + 1,
+    name: `${categories[i % categories.length]} ${colors[i % colors.length]} ${materials[i % materials.length]}`,
+    category: categories[i % categories.length],
+    price: Math.floor(Math.random() * 3000) + 500,
+    originalPrice: Math.floor(Math.random() * 5000) + 2000,
+    rating: (Math.random() * 2 + 3).toFixed(1),
+    reviews: Math.floor(Math.random() * 500) + 10,
+    image: imageUrls[i % imageUrls.length],
+    color: colors[i % colors.length],
+    size: ['XS', 'S', 'M', 'L', 'XL', 'XXL'][Math.floor(Math.random() * 6)],
+    inStock: Math.random() > 0.1,
+    badge: Math.random() > 0.7 ? 'New' : Math.random() > 0.5 ? 'Sale' : null,
+    description: `Premium ${materials[i % materials.length]} ${categories[i % categories.length].toLowerCase()} crafted for comfort and elegance.`
+  }));
+};
+
+// Reviews Data
+const reviews = [
+  { name: 'Priya Sharma', rating: 5, text: 'Absolutely love the quality! The fabric is so soft and comfortable. Fast delivery too!', avatar: '👩‍🦰' },
+  { name: 'Anjali Desai', rating: 5, text: 'Best lingerie collection I\'ve found. Perfect fit and amazing designs. Highly recommended!', avatar: '👱‍♀️' },
+  { name: 'Meera Patel', rating: 5, text: 'Customer service is exceptional. They helped me find the perfect size. Will definitely order again!', avatar: '👩‍🦱' },
+  { name: 'Neha Gupta', rating: 5, text: 'The dresses are stunning! Great quality at reasonable prices. Very satisfied with my purchase.', avatar: '👩' },
+  { name: 'Divya Singh', rating: 5, text: 'Fast support and beautiful products. This is my go-to store for elegant wear now!', avatar: '👩‍🦳' }
+];
+
+// Cart Item Type
+interface CartItem {
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+  size: string;
+}
+
+// Main Component
+export default function Home() {
+  const [isDark, setIsDark] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [sortBy, setSortBy] = useState('popular');
+  const [priceRange, setPriceRange] = useState([0, 5000]);
+  const [products] = useState(generateProducts(100));
+  const [wishlist, setWishlist] = useState<number[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [checkoutStep, setCheckoutStep] = useState(0);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Load cart from localStorage
+  useEffect(() => {
+    const savedCart = localStorage.getItem('divyyansh-cart');
+    if (savedCart) setCart(JSON.parse(savedCart));
+  }, []);
+
+  // Save cart to localStorage
+  useEffect(() => {
+    localStorage.setItem('divyyansh-cart', JSON.stringify(cart));
+  }, [cart]);
+
+  // Scroll listener for navbar shrink effect
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  // Filter and sort products
+  const filteredProducts = products
+    .filter(p => {
+      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+      const matchesPrice = p.price >= priceRange[0] && p.price <= priceRange[1];
+      return matchesSearch && matchesCategory && matchesPrice;
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price-low': return a.price - b.price;
+        case 'price-high': return b.price - a.price;
+        case 'rating': return parseFloat(b.rating) - parseFloat(a.rating);
+        case 'newest': return b.id - a.id;
+        default: return b.reviews - a.reviews;
+      }
+    });
+
+  const itemsPerPage = 12;
+  const paginatedProducts = filteredProducts.slice(0, currentPage * itemsPerPage);
+
+  // Add to cart
+  const addToCart = (product: typeof products[0]) => {
+    setCart(prev => {
+      const existing = prev.find(item => item.id === product.id);
+      if (existing) {
+        return prev.map(item => 
+          item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+        );
+      }
+      return [...prev, {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        quantity: 1,
+        image: product.image,
+        size: product.size
+      }];
+    });
+  };
+
+  // Toggle wishlist
+  const toggleWishlist = (id: number) => {
+    setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  // Calculate totals
+  const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const tax = subtotal * 0.18;
+  const shipping = subtotal > 2000 ? 0 : 100;
+  const total = subtotal + tax + shipping;
+
+  // Testimonial carousel auto-play
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentReviewIndex(prev => (prev + 1) % reviews.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className={`${isDark ? 'dark' : ''} transition-colors duration-300`}>
+      <div className={`min-h-screen ${isDark ? 'bg-slate-950 text-white' : 'bg-white text-slate-900'}`}>
+        
+        {/* ===== NAVBAR ===== */}
+        <nav 
+          ref={navRef}
+          className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+            scrollY > 50 
+              ? isDark ? 'bg-slate-950/95 backdrop-blur-md shadow-lg' : 'bg-white/95 backdrop-blur-md shadow-lg'
+              : isDark ? 'bg-slate-950' : 'bg-white'
+          }`}
+        >
+          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-gradient-to-br from-rose-400 to-rose-600 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-lg">DF</span>
+              </div>
+              <span className="font-bold text-xl hidden sm:inline">Divyyansh</span>
+            </div>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#home" className="hover:text-rose-500 transition">Home</a>
+              <a href="#products" className="hover:text-rose-500 transition">Shop</a>
+              <a href="#about" className="hover:text-rose-500 transition">About</a>
+              <a href="#testimonials" className="hover:text-rose-500 transition">Reviews</a>
+            </div>
+
+            {/* Right Actions */}
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className={`p-2 rounded-lg transition ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}
+              >
+                {isDark ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
+              
+              <button
+                onClick={() => setIsCartOpen(!isCartOpen)}
+                className="relative p-2 hover:bg-rose-50 dark:hover:bg-slate-800 rounded-lg transition"
+              >
+                <ShoppingCart size={20} />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                    {cart.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="md:hidden p-2"
+              >
+                {isMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+          </div>
+
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className={`md:hidden border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+              <div className="px-4 py-4 space-y-3">
+                <a href="#home" className="block hover:text-rose-500">Home</a>
+                <a href="#products" className="block hover:text-rose-500">Shop</a>
+                <a href="#about" className="block hover:text-rose-500">About</a>
+                <a href="#testimonials" className="block hover:text-rose-500">Reviews</a>
+              </div>
+            </div>
+          )}
+        </nav>
+
+        {/* ===== HERO SECTION ===== */}
+        <section id="home" className="pt-20 pb-32 relative overflow-hidden">
+          {/* Animated Background */}
+          <div className={`absolute inset-0 ${isDark ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800' : 'bg-gradient-to-br from-rose-50 via-white to-amber-50'}`} />
+          
+          {/* Animated Elements */}
+          <div className="absolute top-10 left-10 w-40 h-40 bg-rose-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+          <div className="absolute bottom-10 right-10 w-40 h-40 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse" />
+
+          <div className="relative max-w-6xl mx-auto px-4 pt-20 text-center z-10">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-amber-600 bg-clip-text text-transparent">
+              Elegance Redefined
+            </h1>
+            <p className="text-xl md:text-2xl mb-8 opacity-80">
+              Stylish readymade garments & elegant lingerie for fashionable women
+            </p>
+            <div className="flex gap-4 justify-center flex-wrap">
+              <button
+                onClick={() => {
+                  document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-8 py-4 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg font-semibold hover:shadow-lg hover:scale-105 transition-all duration-300"
+              >
+                Explore Collection
+              </button>
+              <button className={`px-8 py-4 border-2 border-rose-500 text-rose-500 rounded-lg font-semibold hover:bg-rose-50 dark:hover:bg-slate-800 transition-all`}>
+                Learn More
+              </button>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== WHY CHOOSE US ===== */}
+        <section className={`py-20 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+          <div className="max-w-6xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-16">Why Choose Us</h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              {[
+                { icon: Zap, title: 'Premium Quality', desc: 'Handpicked fabrics and meticulous craftsmanship' },
+                { icon: Truck, title: 'Fast Delivery', desc: 'Quick shipping to your doorstep' },
+                { icon: Shield, title: '100% Secure', desc: 'Safe transactions with buyer protection' }
+              ].map((item, i) => (
+                <div
+                  key={i}
+                  className={`p-8 rounded-2xl backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:scale-105 ${
+                    isDark ? 'bg-slate-800/50 border border-slate-700' : 'bg-white/50 border border-white'
+                  }`}
+                >
+                  <item.icon className="w-12 h-12 text-rose-500 mb-4" />
+                  <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+                  <p className="opacity-70">{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ===== PRODUCTS SECTION ===== */}
+        <section id="products" className="py-20">
+          <div className="max-w-7xl mx-auto px-4">
+            <h2 className="text-4xl font-bold mb-12">Our Collection</h2>
+
+            {/* Filters */}
+            <div className={`p-6 rounded-2xl mb-12 ${isDark ? 'bg-slate-800' : 'bg-slate-50'}`}>
+              <div className="grid md:grid-cols-4 gap-4 mb-6">
+                {/* Search */}
+                <div className={`relative col-span-full md:col-span-2 ${isDark ? 'bg-slate-700' : 'bg-white'} rounded-lg px-4 py-3 flex items-center`}>
+                  <Search size={18} className="opacity-50" />
+                  <input
+                    type="text"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className={`ml-2 flex-1 outline-none bg-transparent`}
+                  />
+                </div>
+
+                {/* Category */}
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => {
+                    setSelectedCategory(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                  className={`px-4 py-3 rounded-lg outline-none ${isDark ? 'bg-slate-700' : 'bg-white'}`}
+                >
+                  <option>All</option>
+                  <option>Dresses</option>
+                  <option>Lingerie</option>
+                  <option>Tops</option>
+                  <option>Bottoms</option>
+                  <option>Activewear</option>
+                </select>
+
+                {/* Sort */}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className={`px-4 py-3 rounded-lg outline-none ${isDark ? 'bg-slate-700' : 'bg-white'}`}
+                >
+                  <option value="popular">Most Popular</option>
+                  <option value="price-low">Price: Low to High</option>
+                  <option value="price-high">Price: High to Low</option>
+                  <option value="rating">Top Rated</option>
+                  <option value="newest">Newest</option>
+                </select>
+              </div>
+
+              {/* Price Range */}
+              <div className="flex items-center gap-4">
+                <span className="text-sm opacity-70">Price Range:</span>
+                <input
+                  type="range"
+                  min="0"
+                  max="5000"
+                  value={priceRange[1]}
+                  onChange={(e) => {
+                    setPriceRange([0, parseInt(e.target.value)]);
+                    setCurrentPage(1);
+                  }}
+                  className="flex-1"
+                />
+                <span className="text-sm font-semibold">₹{priceRange[1]}</span>
+              </div>
+            </div>
+
+            {/* Products Grid */}
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+              {paginatedProducts.map((product, idx) => (
+                <div
+                  key={product.id}
+                  className={`group rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl hover:scale-105 ${
+                    isDark ? 'bg-slate-800' : 'bg-white border border-slate-100'
+                  }`}
+                  style={{
+                    animation: `fadeInUp 0.5s ease-out ${idx * 0.05}s both`
+                  }}
+                >
+                  {/* Image Container */}
+                  <div className="relative h-64 overflow-hidden bg-slate-200">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    
+                    {/* Badge */}
+                    {product.badge && (
+                      <div className="absolute top-4 left-4 bg-rose-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                        {product.badge}
+                      </div>
+                    )}
+
+                    {/* Wishlist Button */}
+                    <button
+                      onClick={() => toggleWishlist(product.id)}
+                      className={`absolute top-4 right-4 p-2 rounded-full transition-all duration-300 ${
+                        wishlist.includes(product.id)
+                          ? 'bg-rose-500 text-white scale-110'
+                          : isDark ? 'bg-slate-700 hover:bg-rose-500' : 'bg-white hover:bg-rose-500 hover:text-white'
+                      }`}
+                    >
+                      <Heart size={18} fill={wishlist.includes(product.id) ? 'currentColor' : 'none'} />
+                    </button>
+
+                    {/* Quick Add */}
+                    <button
+                      onClick={() => addToCart(product)}
+                      className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300"
+                    >
+                      <div className="text-white font-semibold flex items-center justify-center gap-2">
+                        <ShoppingCart size={18} /> Add to Cart
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Product Info */}
+                  <div className="p-4">
+                    <h3 className="font-semibold mb-2 line-clamp-2">{product.name}</h3>
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="flex items-center gap-1">
+                        <Star size={14} className="fill-amber-400 text-amber-400" />
+                        <span className="text-sm font-semibold">{product.rating}</span>
+                      </div>
+                      <span className="text-xs opacity-50">({product.reviews})</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-lg font-bold text-rose-600">₹{product.price}</span>
+                        <span className="text-sm opacity-50 line-through ml-2">₹{product.originalPrice}</span>
+                      </div>
+                      <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded">
+                        {Math.round((1 - product.price / product.originalPrice) * 100)}% off
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Load More */}
+            {paginatedProducts.length < filteredProducts.length && (
+              <div className="text-center">
+                <button
+                  onClick={() => setCurrentPage(prev => prev + 1)}
+                  className="px-8 py-3 bg-rose-500 text-white rounded-lg font-semibold hover:bg-rose-600 transition"
+                >
+                  Load More Products
+                </button>
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ===== TESTIMONIALS ===== */}
+        <section id="testimonials" className={`py-20 ${isDark ? 'bg-slate-900' : 'bg-slate-50'}`}>
+          <div className="max-w-4xl mx-auto px-4">
+            <h2 className="text-4xl font-bold text-center mb-12">What Our Customers Say</h2>
+            
+            <div className={`p-8 rounded-2xl ${isDark ? 'bg-slate-800 border border-slate-700' : 'bg-white border border-slate-200'}`}>
+              <div className="flex items-center justify-between mb-6">
+                <button
+                  onClick={() => setCurrentReviewIndex(prev => (prev - 1 + reviews.length) % reviews.length)}
+                  className="p-2 hover:bg-rose-100 dark:hover:bg-slate-700 rounded-full transition"
+                >
+                  <ChevronLeft size={20} />
+                </button>
+
+                <div className="flex-1 mx-4">
+                  <div className="flex gap-1 mb-4">
+                    {Array(5).fill(0).map((_, i) => (
+                      <Star key={i} size={16} className="fill-amber-400 text-amber-400" />
+                    ))}
+                  </div>
+                  <p className="text-lg mb-6 italic">"{reviews[currentReviewIndex].text}"</p>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-rose-600 flex items-center justify-center text-lg">
+                      {reviews[currentReviewIndex].avatar}
+                    </div>
+                    <div>
+                      <p className="font-semibold">{reviews[currentReviewIndex].name}</p>
+                      <p className="text-sm opacity-70">Verified Customer</p>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => setCurrentReviewIndex(prev => (prev + 1) % reviews.length)}
+                  className="p-2 hover:bg-rose-100 dark:hover:bg-slate-700 rounded-full transition"
+                >
+                  <ChevronRight size={20} />
+                </button>
+              </div>
+
+              {/* Dots */}
+              <div className="flex justify-center gap-2">
+                {reviews.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrentReviewIndex(i)}
+                    className={`w-2 h-2 rounded-full transition ${
+                      i === currentReviewIndex ? 'bg-rose-500 w-6' : isDark ? 'bg-slate-600' : 'bg-slate-300'
+                    }`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== ABOUT SECTION ===== */}
+        <section id="about" className="py-20">
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <h2 className="text-4xl font-bold mb-6">About Divyyansh Fashion</h2>
+                <p className="text-lg opacity-80 mb-4">
+                  We believe every woman deserves to feel confident and beautiful. Our carefully curated collection of readymade garments and elegant lingerie combines quality, comfort, and style.
+                </p>
+                <p className="text-lg opacity-80 mb-6">
+                  With over 1000+ products and a 4.9★ rating from thousands of satisfied customers, we're committed to delivering the best fashion experience.
+                </p>
+                <div className="space-y-3">
+                  {[
+                    '✓ Premium quality fabrics',
+                    '✓ Affordable pricing',
+                    '✓ Fast & reliable delivery',
+                    '✓ 24/7 customer support'
+                  ].map((item, i) => (
+                    <p key={i} className="flex items-center gap-3">
+                      <span className="text-rose-500 font-bold">{item.split('✓')[0]}✓</span>
+                      <span>{item.split('✓')[1]}</span>
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <div className={`h-96 rounded-2xl overflow-hidden ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                <img
+                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&h=500&fit=crop&q=80"
+                  alt="About"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== FOOTER ===== */}
+        <footer className={`${isDark ? 'bg-slate-900 border-t border-slate-800' : 'bg-slate-50 border-t border-slate-200'} py-12`}>
+          <div className="max-w-6xl mx-auto px-4">
+            <div className="grid md:grid-cols-4 gap-8 mb-8">
+              <div>
+                <h3 className="font-bold text-lg mb-4">Divyyansh Fashion</h3>
+                <p className="opacity-70 text-sm">Premium women's wear & lingerie for the modern woman.</p>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-4">Quick Links</h4>
+                <ul className="space-y-2 text-sm opacity-70">
+                  <li><a href="#" className="hover:text-rose-500 transition">Shop</a></li>
+                  <li><a href="#" className="hover:text-rose-500 transition">About</a></li>
+                  <li><a href="#" className="hover:text-rose-500 transition">Contact</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-4">Support</h4>
+                <ul className="space-y-2 text-sm opacity-70">
+                  <li><a href="#" className="hover:text-rose-500 transition">FAQ</a></li>
+                  <li><a href="#" className="hover:text-rose-500 transition">Returns</a></li>
+                  <li><a href="#" className="hover:text-rose-500 transition">Shipping</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-4">Follow Us</h4>
+                <div className="flex gap-4">
+                  {['Instagram', 'Facebook', 'WhatsApp'].map(social => (
+                    <a key={social} href="#" className="opacity-70 hover:text-rose-500 transition text-sm">
+                      {social}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className={`border-t ${isDark ? 'border-slate-800' : 'border-slate-200'} pt-8 text-center opacity-70 text-sm`}>
+              <p>&copy; 2026 Divyyansh Fashion. All rights reserved. | Crafted with elegance</p>
+            </div>
+          </div>
+        </footer>
+
+        {/* ===== FLOATING WHATSAPP BUTTON ===== */}
+        <a
+          href="https://wa.me/919323731369"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="fixed bottom-6 right-6 w-14 h-14 bg-green-500 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 z-40 hover:shadow-xl"
+        >
+          <MessageCircle size={24} />
+        </a>
+
+        {/* ===== CART SIDEBAR ===== */}
+        {isCartOpen && (
+          <div className="fixed inset-0 z-50 flex">
+            {/* Backdrop */}
+            <div
+              className="flex-1 bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsCartOpen(false)}
+            />
+
+            {/* Cart Panel */}
+            <div className={`w-full sm:w-96 ${isDark ? 'bg-slate-900' : 'bg-white'} shadow-2xl flex flex-col`}>
+              {/* Header */}
+              <div className="p-6 border-b flex items-center justify-between">
+                <h3 className="text-xl font-bold">Shopping Cart</h3>
+                <button onClick={() => setIsCartOpen(false)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Items */}
+              <div className="flex-1 overflow-y-auto p-6 space-y-4">
+                {cart.length === 0 ? (
+                  <div className="text-center py-12 opacity-50">
+                    <ShoppingCart size={48} className="mx-auto mb-4 opacity-50" />
+                    <p>Your cart is empty</p>
+                  </div>
+                ) : (
+                  cart.map(item => (
+                    <div key={item.id} className={`flex gap-4 p-4 rounded-lg ${isDark ? 'bg-slate-800' : 'bg-slate-50'}`}>
+                      <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded" />
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm">{item.name}</p>
+                        <p className="text-rose-600 font-bold">₹{item.price}</p>
+                        <div className="flex items-center gap-2 mt-2">
+                          <button
+                            onClick={() => setCart(prev => prev.map(i => i.id === item.id ? { ...i, quantity: Math.max(1, i.quantity - 1) } : i))}
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+                          >
+                            <Minus size={14} />
+                          </button>
+                          <span className="text-sm font-semibold">{item.quantity}</span>
+                          <button
+                            onClick={() => setCart(prev => prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i))}
+                            className="p-1 hover:bg-slate-200 dark:hover:bg-slate-700 rounded"
+                          >
+                            <Plus size={14} />
+                          </button>
+                          <button
+                            onClick={() => setCart(prev => prev.filter(i => i.id !== item.id))}
+                            className="ml-auto text-rose-500 hover:text-rose-600 text-sm"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+
+              {/* Footer */}
+              {cart.length > 0 && (
+                <div className={`border-t p-6 space-y-4 ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between">
+                      <span>Subtotal</span>
+                      <span>₹{subtotal.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Tax (18%)</span>
+                      <span>₹{tax.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Shipping</span>
+                      <span className={shipping === 0 ? 'text-green-500 font-semibold' : ''}>
+                        {shipping === 0 ? 'FREE' : `₹${shipping}`}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="border-t pt-4 flex justify-between font-bold text-lg">
+                    <span>Total</span>
+                    <span className="text-rose-600">₹{total.toLocaleString()}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowCheckout(true);
+                      setIsCartOpen(false);
+                    }}
+                    className="w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition"
+                  >
+                    Proceed to Checkout
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* ===== CHECKOUT MODAL ===== */}
+        {showCheckout && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+            <div className={`w-full max-w-2xl rounded-2xl ${isDark ? 'bg-slate-900' : 'bg-white'} shadow-2xl`}>
+              {/* Header */}
+              <div className="p-6 border-b flex items-center justify-between">
+                <h3 className="text-2xl font-bold">Checkout</h3>
+                <button onClick={() => setShowCheckout(false)} className="p-1">
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Steps */}
+              <div className="p-6">
+                {/* Step Indicator */}
+                <div className="flex items-center justify-between mb-8">
+                  {['Cart', 'Details', 'Payment', 'Confirmation'].map((step, i) => (
+                    <div key={i} className="flex items-center flex-1">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition ${
+                        i <= checkoutStep ? 'bg-rose-500 text-white' : isDark ? 'bg-slate-800' : 'bg-slate-200'
+                      }`}>
+                        {i + 1}
+                      </div>
+                      <div className={`flex-1 h-1 mx-2 ${i < checkoutStep ? 'bg-rose-500' : isDark ? 'bg-slate-800' : 'bg-slate-200'}`} />
+                    </div>
+                  ))}
+                </div>
+
+                {/* Step Content */}
+                {checkoutStep === 0 && (
+                  <div>
+                    <h4 className="font-bold mb-4">Order Summary</h4>
+                    <div className="space-y-3 mb-6">
+                      {cart.map(item => (
+                        <div key={item.id} className="flex justify-between text-sm">
+                          <span>{item.name} x {item.quantity}</span>
+                          <span>₹{(item.price * item.quantity).toLocaleString()}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className={`border-t pt-4 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                      <div className="flex justify-between font-bold">
+                        <span>Total</span>
+                        <span className="text-rose-600">₹{total.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {checkoutStep === 1 && (
+                  <div>
+                    <h4 className="font-bold mb-4">Delivery Details</h4>
+                    <form className="space-y-4">
+                      <input type="text" placeholder="Full Name" className={`w-full px-4 py-2 rounded-lg outline-none ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                      <input type="email" placeholder="Email" className={`w-full px-4 py-2 rounded-lg outline-none ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                      <input type="tel" placeholder="Phone Number" className={`w-full px-4 py-2 rounded-lg outline-none ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                      <input type="text" placeholder="Address" className={`w-full px-4 py-2 rounded-lg outline-none ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <input type="text" placeholder="City" className={`px-4 py-2 rounded-lg outline-none ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                        <input type="text" placeholder="Postal Code" className={`px-4 py-2 rounded-lg outline-none ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`} />
+                      </div>
+                    </form>
+                  </div>
+                )}
+
+                {checkoutStep === 2 && (
+                  <div>
+                    <h4 className="font-bold mb-4">Payment Method</h4>
+                    <div className="space-y-3">
+                      {[
+                        { name: 'Credit/Debit Card', icon: '💳' },
+                        { name: 'UPI', icon: '📱' },
+                        { name: 'Net Banking', icon: '🏦' },
+                        { name: 'Wallet', icon: '👛' }
+                      ].map((method, i) => (
+                        <label key={i} className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition ${isDark ? 'border-slate-700 hover:border-rose-500' : 'border-slate-200 hover:border-rose-500'}`}>
+                          <input type="radio" name="payment" className="mr-4" defaultChecked={i === 0} />
+                          <span className="text-lg mr-3">{method.icon}</span>
+                          <span>{method.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {checkoutStep === 3 && (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-4">
+                      <span className="text-3xl">✓</span>
+                    </div>
+                    <h4 className="text-2xl font-bold mb-2">Order Confirmed!</h4>
+                    <p className="opacity-70 mb-6">Order ID: #DV{Math.floor(Math.random() * 1000000)}</p>
+                    <p className="text-sm opacity-70 mb-6">Thank you for your purchase! You'll receive a confirmation email shortly.</p>
+                    <div className={`p-4 rounded-lg mb-6 ${isDark ? 'bg-slate-800' : 'bg-slate-100'}`}>
+                      <p className="text-sm">Estimated Delivery: 3-5 business days</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Navigation Buttons */}
+                <div className="flex gap-4 mt-8">
+                  {checkoutStep > 0 && (
+                    <button
+                      onClick={() => setCheckoutStep(prev => prev - 1)}
+                      className={`flex-1 px-6 py-3 rounded-lg font-semibold transition ${isDark ? 'bg-slate-800 hover:bg-slate-700' : 'bg-slate-100 hover:bg-slate-200'}`}
+                    >
+                      Back
+                    </button>
+                  )}
+                  {checkoutStep < 3 && (
+                    <button
+                      onClick={() => setCheckoutStep(prev => prev + 1)}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg font-semibold hover:shadow-lg transition"
+                    >
+                      {checkoutStep === 2 ? 'Place Order' : 'Continue'}
+                    </button>
+                  )}
+                  {checkoutStep === 3 && (
+                    <button
+                      onClick={() => {
+                        setShowCheckout(false);
+                        setCheckoutStep(0);
+                        setCart([]);
+                      }}
+                      className="flex-1 px-6 py-3 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-lg font-semibold hover:shadow-lg transition"
+                    >
+                      Continue Shopping
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Animation Styles */}
+        <style>{`
+          @keyframes fadeInUp {
+            from {
+              opacity: 0;
+              transform: translateY(30px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
+      </div>
+    </div>
+  );
+}

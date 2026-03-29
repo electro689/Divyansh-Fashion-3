@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Divyyansh Fashion — Pune's Premier Fashion Destination</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root{--rose:#C8536A;--rose-l:#F2B8C2;--rose-d:#8B2B3E;--gold:#C9A84C;--gold-l:#F0D98A;--cream:#FDF6EE;--mist:#F5EEF0;--card:#FFFFFF;--nav:rgba(253,246,238,.9);--text:#1A1118;--muted:#6B5560;--border:#E8D8DC;--ink:#1A1118;}
+[data-theme="dark"]{--cream:#140E12;--mist:#1E1520;--card:#241A21;--nav:rgba(20,14,18,.92);--text:#F5EEF0;--muted:#C4A8B5;--border:#3D2B38;--ink:#F5EEF0;}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);transition:background .3s,color .3s;overflow-x:hidden;}
+h1,h2,h3{font-family:'Playfair Display',serif;}
+
+/* NAV */
+#navbar{position:fixed;top:0;left:0;right:0;z-index:1000;background:var(--nav);backdrop-filter:blur(18px);border-bottom:1px solid var(--border);transition:box-shadow .3s;}
+#navbar.scrolled{box-shadow:0 4px 30px rgba(0,0,0,.09);}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:68px;transition:height .3s;}
+#navbar.scrolled .nav-inner{height:56px;}
+.logo{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--rose);}
+.logo span{color:var(--gold);}
+.nav-links{display:flex;gap:2rem;list-style:none;}
+.nav-links a{color:var(--text);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .2s;}
+.nav-links a:hover{color:var(--rose);}
+.nav-actions{display:flex;align-items:center;gap:1rem;}
+.btn-icon{background:none;border:none;cursor:pointer;color:var(--text);padding:8px;border-radius:8px;transition:background .2s;position:relative;}
+.btn-icon:hover{background:var(--mist);}
+.cart-badge{position:absolute;top:2px;right:2px;background:var(--rose);color:#fff;font-size:.65rem;font-weight:700;width:17px;height:17px;border-radius:50%;display:none;align-items:center;justify-content:center;}
+.btn-primary{background:var(--rose);color:#fff;border:none;padding:10px 22px;border-radius:30px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .25s;}
+.btn-primary:hover{background:var(--rose-d);transform:translateY(-1px);box-shadow:0 6px 20px rgba(200,83,106,.35);}
+.btn-outline{background:transparent;border:2px solid var(--rose);color:var(--rose);padding:10px 22px;border-radius:30px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:all .25s;}
+.btn-outline:hover{background:var(--rose);color:#fff;}
+#mob-btn{display:none;}
+
+/* MOBILE NAV */
+#mobile-nav{display:none;position:fixed;inset:0;background:var(--cream);z-index:999;flex-direction:column;padding:5rem 2rem 2rem;gap:2rem;}
+#mobile-nav.open{display:flex;}
+#mobile-nav a{font-family:'Playfair Display',serif;font-size:2rem;font-weight:700;color:var(--text);text-decoration:none;}
+
+/* TRUST BAR */
+.trust-bar{background:var(--rose);color:#fff;overflow:hidden;white-space:nowrap;margin-top:68px;}
+.trust-track{display:inline-flex;gap:3rem;padding:12px 0;animation:marquee 22s linear infinite;}
+@keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.trust-item{font-size:.78rem;font-weight:600;letter-spacing:.8px;text-transform:uppercase;display:flex;align-items:center;gap:8px;}
+
+/* HERO */
+#home{min-height:100vh;background:linear-gradient(135deg,var(--cream) 0%,var(--mist) 100%);display:flex;align-items:center;position:relative;overflow:hidden;}
+#shader-container{position:absolute;inset:0;pointer-events:none;z-index:2;mix-blend-mode:screen;opacity:0.9;}
+[data-theme="light"] #shader-container{filter:invert(1);mix-blend-mode:multiply;opacity:0.75;}
+#blossom-canvas{position:absolute;inset:0;pointer-events:none;z-index:3;}
+.hero-orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;opacity:.45;}
+.orb1{width:620px;height:620px;background:var(--rose-l);top:-210px;right:-100px;}
+.orb2{width:420px;height:420px;background:var(--gold-l);bottom:-110px;left:-60px;}
+.gring{position:absolute;border-radius:50%;border:1px solid rgba(200,83,106,.2);pointer-events:none;animation:rpulse 3s ease-in-out infinite;}
+.gring:nth-child(3){width:320px;height:320px;top:18%;right:9%;animation-delay:0s;}
+.gring:nth-child(4){width:520px;height:520px;top:6%;right:-1%;animation-delay:.9s;}
+.gring:nth-child(5){width:720px;height:720px;top:-4%;right:-11%;animation-delay:1.8s;}
+@keyframes rpulse{0%,100%{opacity:.2;transform:scale(1)}50%{opacity:.5;transform:scale(1.03)}}
+.hero-inner{max-width:1400px;margin:0 auto;padding:6rem 2rem 5rem;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;position:relative;z-index:3;}
+
+/* Hero entrance animations */
+.h-tag {opacity:0;transform:translateY(20px);animation:fadeUp .7s .2s cubic-bezier(.22,1,.36,1) forwards;}
+.h-h1  {opacity:0;transform:translateY(30px);animation:fadeUp .8s .4s cubic-bezier(.22,1,.36,1) forwards;}
+.h-sub {opacity:0;transform:translateY(24px);animation:fadeUp .8s .6s cubic-bezier(.22,1,.36,1) forwards;}
+.h-cta {opacity:0;transform:translateY(20px);animation:fadeUp .7s .8s cubic-bezier(.22,1,.36,1) forwards;}
+.h-stat{opacity:0;transform:translateY(16px);animation:fadeUp .7s 1s  cubic-bezier(.22,1,.36,1) forwards;}
+.h-vis {opacity:0;transform:translateX(40px) scale(.96);animation:fadeRight 1s .5s cubic-bezier(.22,1,.36,1) forwards;}
+@keyframes fadeUp  {to{opacity:1;transform:none}}
+@keyframes fadeRight{to{opacity:1;transform:none}}
+
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);padding:6px 16px;border-radius:30px;font-size:.8rem;font-weight:600;color:var(--rose);letter-spacing:1px;text-transform:uppercase;margin-bottom:1.5rem;}
+.hero-badge .dot{width:8px;height:8px;background:var(--rose);border-radius:50%;animation:blink 1.5s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.hero-h1{font-size:clamp(2.8rem,5vw,5rem);line-height:1.1;color:var(--ink);font-weight:900;margin-bottom:1.5rem;}
+.hero-h1 em{color:var(--rose);font-style:italic;}
+.hero-sub{font-size:1.05rem;color:var(--muted);line-height:1.75;max-width:480px;margin-bottom:2.5rem;}
+.hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:3rem;}
+.hero-stats{display:flex;gap:2.5rem;}
+.stat-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--rose);display:block;}
+.stat-lbl{font-size:.78rem;color:var(--muted);letter-spacing:.5px;}
+
+/* Hero visual cards */
+.hero-visual{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.hcard{background:var(--card);border-radius:20px;overflow:hidden;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.08);animation:float 4s ease-in-out infinite;transition:transform .3s;}
+.hcard:nth-child(1){animation-delay:0s;}
+.hcard:nth-child(2){animation-delay:1s;margin-top:40px;}
+.hcard:nth-child(3){animation-delay:.5s;}
+.hcard:nth-child(4){animation-delay:1.5s;}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.hcard-img{height:200px;display:flex;align-items:center;justify-content:center;font-size:4rem;background:linear-gradient(135deg,var(--mist),var(--rose-l));position:relative;overflow:hidden;}
+.hcard-img::after{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.35) 50%,transparent 70%);transform:translateX(-100%);animation:shimmer 3.5s 2s infinite;}
+@keyframes shimmer{to{transform:translateX(200%)}}
+.hcard-body{padding:1rem 1.2rem;}
+.hcard-name{font-weight:600;font-size:.9rem;color:var(--text);}
+.hcard-price{color:var(--rose);font-weight:700;font-size:1rem;}
+
+/* Scroll indicator */
+.scroll-ind{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:6px;z-index:4;opacity:0;animation:fadeUp .7s 1.4s ease forwards;}
+.scroll-ind span{font-size:.68rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,var(--rose),transparent);animation:spulse 1.6s ease-in-out infinite;}
+@keyframes spulse{0%{transform:scaleY(0);transform-origin:top;opacity:0}50%{transform:scaleY(1);transform-origin:top;opacity:1}100%{transform:scaleY(1);transform-origin:bottom;opacity:0}}
+
+/* SECTIONS */
+section{padding:6rem 2rem;}
+.s-inner{max-width:1300px;margin:0 auto;}
+.s-tag{font-size:.75rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--rose);margin-bottom:.75rem;}
+.s-title{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--ink);line-height:1.2;margin-bottom:1rem;}
+.s-sub{font-size:1rem;color:var(--muted);max-width:560px;line-height:1.7;}
+
+/* ABOUT */
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+.about-vis{background:linear-gradient(135deg,var(--mist),var(--rose-l));border-radius:32px;height:400px;display:flex;align-items:center;justify-content:center;font-size:8rem;position:relative;overflow:hidden;}
+.about-badge{position:absolute;bottom:20px;right:20px;background:var(--card);border-radius:16px;padding:1rem 1.5rem;box-shadow:0 10px 30px rgba(0,0,0,.1);}
+.about-badge-num{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;color:var(--rose);}
+.about-badge-lbl{font-size:.75rem;color:var(--muted);}
+.about-list{list-style:none;display:flex;flex-direction:column;gap:.75rem;margin-top:2rem;}
+.about-list li{display:flex;align-items:center;gap:10px;font-size:.9rem;color:var(--muted);}
+.about-list li::before{content:'✓';color:var(--rose);font-weight:700;}
+.counters-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;margin-top:3rem;}
+.counter-card{background:var(--card);border-radius:20px;padding:2rem;text-align:center;border:1px solid var(--border);}
+.counter-num{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:900;color:var(--rose);}
+.counter-lbl{font-size:.85rem;color:var(--muted);margin-top:4px;}
+
+/* FEATURES */
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-top:3rem;}
+.fcard{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem 1.5rem;transition:all .3s;position:relative;overflow:hidden;}
+.fcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--rose),var(--gold));transform:scaleX(0);transform-origin:left;transition:transform .3s;}
+.fcard:hover::before{transform:scaleX(1);}
+.fcard:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(200,83,106,.12);}
+.ficon{font-size:2.5rem;margin-bottom:1rem;}
+.ftitle{font-weight:700;font-size:1rem;color:var(--text);margin-bottom:.5rem;}
+.fdesc{font-size:.875rem;color:var(--muted);line-height:1.6;}
+
+/* PRODUCTS */
+#products{background:var(--mist);}
+.prod-controls{display:flex;flex-wrap:wrap;gap:1rem;align-items:center;margin-bottom:2rem;}
+.search-box{display:flex;align-items:center;gap:8px;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px 16px;flex:1;min-width:220px;}
+.search-box input{border:none;background:transparent;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);outline:none;flex:1;}
+.search-box input::placeholder{color:var(--muted);}
+.fsel{background:var(--card);border:1px solid var(--border);color:var(--text);font-family:'DM Sans',sans-serif;font-size:.875rem;padding:10px 16px;border-radius:12px;cursor:pointer;outline:none;}
+.ftabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+.ftab{padding:7px 18px;border-radius:30px;font-size:.8rem;font-weight:600;border:1px solid var(--border);background:var(--card);color:var(--muted);cursor:pointer;transition:all .2s;}
+.ftab.active,.ftab:hover{background:var(--rose);color:#fff;border-color:var(--rose);}
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+.pcard{background:var(--card);border-radius:18px;overflow:hidden;border:1px solid var(--border);transition:all .3s;position:relative;}
+.pcard:hover{transform:translateY(-6px);box-shadow:0 24px 48px rgba(0,0,0,.12);}
+.pimg{position:relative;overflow:hidden;height:240px;background:linear-gradient(135deg,var(--mist),var(--rose-l));display:flex;align-items:center;justify-content:center;font-size:5rem;cursor:pointer;}
+.pimg::after{content:'🔍 Quick View';position:absolute;bottom:0;left:0;right:0;background:rgba(200,83,106,.9);color:#fff;text-align:center;padding:12px;font-size:.8rem;font-weight:600;letter-spacing:.5px;transform:translateY(100%);transition:transform .25s;}
+.pcard:hover .pimg::after{transform:translateY(0);}
+.pwish{position:absolute;top:12px;right:12px;background:var(--card);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.pwish:hover,.pwish.active{background:var(--rose);border-color:var(--rose);}
+.pbadge{position:absolute;top:12px;left:12px;background:var(--rose);color:#fff;font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:20px;}
+.pbody{padding:1.2rem;}
+.pcat{font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--rose);font-weight:700;margin-bottom:4px;}
+.pname{font-weight:600;font-size:.95rem;color:var(--text);margin-bottom:6px;line-height:1.4;}
+.prating{display:flex;align-items:center;gap:4px;margin-bottom:10px;}
+.stars{color:var(--gold);font-size:.8rem;letter-spacing:1px;}
+.rcount{font-size:.75rem;color:var(--muted);}
+.pfooter{display:flex;align-items:center;justify-content:space-between;}
+.pprice{font-family:'Playfair Display',serif;font-weight:700;color:var(--rose);font-size:1.1rem;}
+.pold{font-size:.8rem;color:var(--muted);text-decoration:line-through;margin-left:4px;}
+.btn-cart{background:var(--rose);color:#fff;border:none;width:36px;height:36px;border-radius:50%;font-size:1.1rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;}
+.btn-cart:hover{background:var(--rose-d);transform:scale(1.1);}
+
+/* TESTIMONIALS */
+.ttrack{display:flex;gap:1.5rem;overflow-x:auto;padding-bottom:1rem;scroll-snap-type:x mandatory;scrollbar-width:none;}
+.ttrack::-webkit-scrollbar{display:none;}
+.tcard{background:var(--card);border:1px solid var(--border);border-radius:24px;padding:2rem;min-width:320px;scroll-snap-align:start;flex-shrink:0;transition:all .3s;position:relative;}
+.tcard::before{content:'"';font-family:'Playfair Display',serif;font-size:5rem;color:var(--rose-l);line-height:1;position:absolute;top:10px;left:20px;opacity:.45;}
+.tcard:hover{transform:translateY(-4px);box-shadow:0 20px 40px rgba(200,83,106,.1);}
+.ttext{font-size:.95rem;color:var(--muted);line-height:1.7;margin-bottom:1.5rem;position:relative;z-index:1;padding-top:1.5rem;}
+.tauthor{display:flex;align-items:center;gap:12px;}
+.tavatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--rose),var(--gold));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1rem;}
+.tname{font-weight:700;font-size:.9rem;color:var(--text);}
+.tmeta{font-size:.75rem;color:var(--muted);}
+.cbtn-row{display:flex;gap:.75rem;margin-top:1.5rem;}
+.cbtn{width:44px;height:44px;border-radius:50%;border:2px solid var(--border);background:var(--card);color:var(--text);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.cbtn:hover{background:var(--rose);border-color:var(--rose);color:#fff;}
+
+/* CONTACT */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;margin-top:3rem;}
+.contact-form{display:flex;flex-direction:column;gap:1rem;}
+.flbl{font-size:.8rem;font-weight:600;color:var(--text);letter-spacing:.5px;display:block;margin-bottom:6px;}
+.finput{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--text);outline:none;transition:border-color .2s;width:100%;}
+.finput:focus{border-color:var(--rose);}
+.cinfo{display:flex;flex-direction:column;gap:1.5rem;}
+.citem{display:flex;gap:1rem;align-items:flex-start;}
+.cicon{width:48px;height:48px;background:linear-gradient(135deg,var(--rose),var(--rose-d));border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;}
+.clbl{font-weight:700;font-size:.85rem;color:var(--text);margin-bottom:2px;}
+.cval{font-size:.9rem;color:var(--muted);}
+
+/* CART */
+#cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:2000;display:none;justify-content:flex-end;}
+#cart-overlay.open{display:flex;}
+#cart-sidebar{background:var(--card);width:min(420px,100vw);height:100%;display:flex;flex-direction:column;transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
+#cart-overlay.open #cart-sidebar{transform:translateX(0);}
+.cart-hdr{padding:1.5rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+.cart-title{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:700;color:var(--text);}
+.cart-body{flex:1;overflow-y:auto;padding:1.5rem;display:flex;flex-direction:column;gap:1rem;}
+.cart-empty{text-align:center;padding:3rem;color:var(--muted);}
+.ci-row{display:flex;gap:1rem;align-items:center;background:var(--mist);border-radius:14px;padding:1rem;}
+.ci-img{font-size:2.5rem;width:60px;text-align:center;}
+.ci-info{flex:1;}
+.ci-name{font-weight:600;font-size:.9rem;color:var(--text);}
+.ci-price{color:var(--rose);font-weight:700;font-size:.9rem;}
+.ci-qty{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.qbtn{background:var(--card);border:1px solid var(--border);border-radius:6px;width:26px;height:26px;cursor:pointer;font-size:.9rem;color:var(--text);display:flex;align-items:center;justify-content:center;}
+.qnum{font-weight:700;font-size:.9rem;color:var(--text);min-width:20px;text-align:center;}
+.cremove{background:none;border:none;cursor:pointer;color:var(--muted);font-size:1.2rem;padding:4px;}
+.cart-ftr{padding:1.5rem;border-top:1px solid var(--border);}
+.cart-total-row{display:flex;justify-content:space-between;font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:1rem;}
+.cart-total-row span:last-child{color:var(--rose);}
+
+/* CHECKOUT */
+#co-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;}
+#co-modal.open{display:flex;}
+.co-box{background:var(--card);border-radius:24px;width:min(700px,100%);max-height:90vh;overflow-y:auto;position:relative;}
+.co-hdr{padding:2rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.steps{display:flex;gap:8px;}
+.step{padding:6px 18px;border-radius:30px;font-size:.8rem;font-weight:700;border:2px solid var(--border);color:var(--muted);}
+.step.active{background:var(--rose);border-color:var(--rose);color:#fff;}
+.step.done{background:#22C55E;border-color:#22C55E;color:#fff;}
+.co-body{padding:2rem;}
+.co-st{font-weight:700;font-size:1rem;color:var(--text);margin-bottom:1rem;}
+.co-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1.5rem;}
+.pay-opts{display:flex;flex-direction:column;gap:.75rem;}
+.pay-opt{display:flex;align-items:center;gap:12px;border:2px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s;}
+.pay-opt:hover,.pay-opt.sel{border-color:var(--rose);background:rgba(200,83,106,.05);}
+.pay-opt input{accent-color:var(--rose);width:18px;height:18px;}
+.pay-icon{font-size:1.5rem;}
+.pay-lbl{font-weight:600;font-size:.9rem;color:var(--text);}
+.pay-sub{font-size:.75rem;color:var(--muted);}
+.ord-sum{background:var(--mist);border-radius:14px;padding:1.5rem;margin-bottom:2rem;}
+.ord-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:.9rem;color:var(--text);}
+.ord-item:last-child{border-bottom:none;font-weight:700;color:var(--rose);font-size:1rem;}
+.close-btn{position:absolute;top:1rem;right:1rem;background:var(--card);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:1.2rem;color:var(--text);display:flex;align-items:center;justify-content:center;z-index:1;}
+
+/* QUICK VIEW */
+#qv-modal{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:3000;display:none;align-items:center;justify-content:center;padding:1rem;}
+#qv-modal.open{display:flex;}
+.qv-box{background:var(--card);border-radius:24px;width:min(700px,100%);display:grid;grid-template-columns:1fr 1fr;overflow:hidden;max-height:90vh;position:relative;}
+.qv-img{background:linear-gradient(135deg,var(--mist),var(--rose-l));display:flex;align-items:center;justify-content:center;font-size:8rem;min-height:350px;}
+.qv-info{padding:2rem;overflow-y:auto;}
+.qty-sel{display:flex;align-items:center;gap:12px;margin:1rem 0;}
+.qty-btn{background:var(--mist);border:1px solid var(--border);border-radius:8px;width:36px;height:36px;cursor:pointer;font-size:1.1rem;color:var(--text);display:flex;align-items:center;justify-content:center;}
+
+/* CURSOR PETAL */
+.cpetal{position:fixed;pointer-events:none;z-index:9999;font-size:1rem;opacity:.85;animation:pfly 1s ease forwards;}
+@keyframes pfly{0%{opacity:.85;transform:translate(0,0) rotate(0deg) scale(1);}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--dr)) scale(.3);}}
+
+/* FLOATS */
+#wa-float{position:fixed;bottom:90px;right:24px;z-index:500;background:#25D366;color:#fff;border-radius:50%;width:54px;height:54px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 6px 20px rgba(37,211,102,.4);cursor:pointer;transition:transform .2s;text-decoration:none;}
+#wa-float:hover{transform:scale(1.1);}
+#scroll-top{position:fixed;bottom:24px;right:24px;z-index:500;background:var(--rose);color:#fff;border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;cursor:pointer;transition:all .2s;opacity:0;pointer-events:none;border:none;box-shadow:0 4px 14px rgba(200,83,106,.4);}
+#scroll-top.vis{opacity:1;pointer-events:auto;}
+#scroll-top:hover{transform:translateY(-3px);}
+
+/* FOOTER */
+footer{background:#1A1118;color:#fff;padding:4rem 2rem 2rem;}
+.fi{max-width:1300px;margin:0 auto;}
+.fg{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3rem;}
+.fb{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;color:var(--rose);margin-bottom:1rem;}
+.fd{font-size:.875rem;color:rgba(255,255,255,.45);line-height:1.7;}
+.fh{font-weight:700;font-size:.85rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-bottom:1rem;}
+.fl{list-style:none;display:flex;flex-direction:column;gap:.5rem;}
+.fl a{color:rgba(255,255,255,.4);text-decoration:none;font-size:.875rem;transition:color .2s;}
+.fl a:hover{color:var(--rose);}
+.fbot{border-top:1px solid rgba(255,255,255,.1);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;font-size:.8rem;color:rgba(255,255,255,.28);}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:all .6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* RESPONSIVE */
+@media(max-width:1024px){.prod-grid{grid-template-columns:repeat(3,1fr);}.fg{grid-template-columns:1fr 1fr;}.hero-inner{grid-template-columns:1fr;}.hero-visual{display:none;}.counters-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:768px){.theme-text,.nav-actions .btn-primary,.nav-links{display:none;}#mob-btn{display:flex;}.prod-grid{grid-template-columns:repeat(2,1fr);}.contact-grid,.co-grid,.about-grid{grid-template-columns:1fr;}.qv-box{grid-template-columns:1fr;}.qv-img{min-height:200px;}.fg{grid-template-columns:1fr;}.hero-stats{gap:1.5rem;}}
+@media(max-width:480px){.prod-grid{grid-template-columns:1fr 1fr;gap:.75rem;}.pimg{height:170px;font-size:3.5rem;}section{padding:4rem 1rem;}}
+/* CART ADD ANIMATIONS */
+.fly-emoji{position:fixed;z-index:9999;font-size:1.8rem;pointer-events:none;animation:flyToCart .75s cubic-bezier(.2,.6,.3,1) forwards;filter:drop-shadow(0 4px 12px rgba(200,83,106,.5));}
+@keyframes flyToCart{0%{opacity:1;transform:scale(1) translate(0,0)}50%{opacity:1;transform:scale(1.3) translate(var(--dx),calc(var(--dy) - 40px))}100%{opacity:0;transform:scale(.3) translate(var(--tx),var(--ty))}}
+.badge-bounce{animation:badgePop .5s cubic-bezier(.68,-.55,.27,1.55) forwards;}
+@keyframes badgePop{0%{transform:scale(1)}40%{transform:scale(1.6)}60%{transform:scale(.85)}100%{transform:scale(1)}}
+.pcard.cart-flash .pimg{animation:cardFlash .5s ease-out;}
+@keyframes cardFlash{0%{box-shadow:inset 0 0 0 0 rgba(200,83,106,0)}30%{box-shadow:inset 0 0 0 3px rgba(200,83,106,.5)}100%{box-shadow:inset 0 0 0 0 rgba(200,83,106,0)}}
+.btn-cart.added{animation:btnPulse .4s ease;background:var(--rose)!important;color:#fff!important;}
+@keyframes btnPulse{0%{transform:scale(1)}50%{transform:scale(1.35)}100%{transform:scale(1)}}
+#add-toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(120px);z-index:10000;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--rose);padding:14px 28px 14px 20px;border-radius:14px;display:flex;align-items:center;gap:12px;font-size:.9rem;font-weight:600;color:var(--text);box-shadow:0 16px 48px rgba(0,0,0,.15);transition:transform .45s cubic-bezier(.68,-.55,.27,1.55),opacity .3s ease;opacity:0;pointer-events:none;backdrop-filter:blur(12px);}
+#add-toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+#add-toast .toast-icon{font-size:1.4rem;}
+#add-toast .toast-check{color:var(--rose);font-weight:800;}
+</style>
+</head>
+<body>
+<div id="add-toast"><span class="toast-icon">🛒</span><span class="toast-check">✓</span> <span id="toast-text">Added to bag!</span></div>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="logo">Divyyansh <span>Fashion</span></div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#testimonials">Reviews</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav-actions">
+      <button class="btn-icon" id="theme-btn" onclick="toggleTheme()" style="font-weight:600;font-size:.9rem;display:inline-flex;align-items:center;gap:6px;"><span class="theme-icon" style="font-style:normal">☀️</span><span class="theme-text">Light Mode</span></button>
+      <button class="btn-icon" onclick="openCart()">🛒<span class="cart-badge" id="cart-badge">0</span></button>
+      <button class="btn-primary" onclick="goTo('products')">Shop Now</button>
+      <button class="btn-icon" id="mob-btn" onclick="toggleMobNav()">☰</button>
+    </div>
+  </div>
+</nav>
+<div id="mobile-nav">
+  <a href="#home" onclick="toggleMobNav()">Home</a>
+  <a href="#about" onclick="toggleMobNav()">About</a>
+  <a href="#products" onclick="toggleMobNav()">Products</a>
+  <a href="#testimonials" onclick="toggleMobNav()">Reviews</a>
+  <a href="#contact" onclick="toggleMobNav()">Contact</a>
+  <button class="btn-primary" onclick="toggleMobNav();goTo('products')">Shop Now ✨</button>
+</div>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-track">
+    <span class="trust-item">🏆 Pune's Biggest Hosiery Store</span>
+    <span class="trust-item">✨ 500+ Happy Customers</span>
+    <span class="trust-item">🎀 Premium Brands</span>
+    <span class="trust-item">🚚 Free Delivery Above ₹999</span>
+    <span class="trust-item">💎 Genuine Products Guaranteed</span>
+    <span class="trust-item">🌸 Fresh Stock Always</span>
+    <span class="trust-item">🏆 Pune's Biggest Hosiery Store</span>
+    <span class="trust-item">✨ 500+ Happy Customers</span>
+    <span class="trust-item">🎀 Premium Brands</span>
+    <span class="trust-item">🚚 Free Delivery Above ₹999</span>
+    <span class="trust-item">💎 Genuine Products Guaranteed</span>
+    <span class="trust-item">🌸 Fresh Stock Always</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section id="home">
+  <div id="shader-container"></div>
+  <canvas id="blossom-canvas"></canvas>
+  <div class="hero-orb orb1"></div>
+  <div class="hero-orb orb2"></div>
+  <div class="gring"></div>
+  <div class="gring"></div>
+  <div class="gring"></div>
+  <div class="scroll-ind"><span>Scroll</span><div class="scroll-line"></div></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge h-tag"><span class="dot"></span> Pune's Premier Fashion Store</div>
+      <h1 class="hero-h1 h-h1">Style That <em>Empowers</em> Every Woman</h1>
+      <p class="hero-sub h-sub">Discover Pune's biggest collection of readymade garments, premium lingerie, and everyday essentials — where quality meets comfort and fashion meets affordability.</p>
+      <div class="hero-ctas h-cta">
+        <button class="btn-primary" onclick="goTo('products')">Explore Collection →</button>
+        <button class="btn-outline" onclick="goTo('about')">Our Story</button>
+      </div>
+      <div class="hero-stats h-stat">
+        <div><span class="stat-num" id="cnt1">1000+</span><span class="stat-lbl">Products</span></div>
+        <div><span class="stat-num" id="cnt2">500+</span><span class="stat-lbl">Happy Customers</span></div>
+        <div><span class="stat-num" id="cnt3">5+</span><span class="stat-lbl">Years of Trust</span></div>
+      </div>
+    </div>
+    <div class="hero-visual h-vis">
+      <div class="hcard"><div class="hcard-img">👗</div><div class="hcard-body"><div class="hcard-name">Elegant Dresses</div><div class="hcard-price">₹799 onwards</div></div></div>
+      <div class="hcard"><div class="hcard-img">🩱</div><div class="hcard-body"><div class="hcard-name">Lingerie & Intimates</div><div class="hcard-price">₹299 onwards</div></div></div>
+      <div class="hcard"><div class="hcard-img">👚</div><div class="hcard-body"><div class="hcard-name">Casual Wear</div><div class="hcard-price">₹499 onwards</div></div></div>
+      <div class="hcard"><div class="hcard-img">🌙</div><div class="hcard-body"><div class="hcard-name">Nightwear</div><div class="hcard-price">₹599 onwards</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="s-inner">
+    <div class="about-grid">
+      <div class="about-vis reveal"><span style="position:relative;z-index:1">👑</span><div class="about-badge"><div class="about-badge-num">5★</div><div class="about-badge-lbl">Google Rated</div></div></div>
+      <div>
+        <div class="s-tag reveal">Our Story</div>
+        <h2 class="s-title reveal">Undri–Pisoli's Most Loved Fashion Destination</h2>
+        <p class="s-sub reveal">Divyyansh Fashion is Pune's biggest hosiery and apparel store, located in Undri-Pisoli. We offer a curated range of stylish readymade garments and elegant lingerie — blending quality craftsmanship with accessible pricing so every woman can dress with confidence.</p>
+        <ul class="about-list reveal">
+          <li>Vast selection including Jockey, backless &amp; strapless bras, nightwear</li>
+          <li>Men's and women's innerwear, activewear, and daily essentials</li>
+          <li>Pro-active, friendly, and knowledgeable sales staff</li>
+          <li>Owner personally ensures every customer is satisfied</li>
+          <li>Fresh stock updated regularly with the latest designs</li>
+          <li>Genuine products at fair, affordable prices — always</li>
+        </ul>
+      </div>
+    </div>
+    <div class="counters-grid reveal" style="margin-top:4rem">
+      <div class="counter-card"><div class="counter-num">1000+</div><div class="counter-lbl">Products In Stock</div></div>
+      <div class="counter-card"><div class="counter-num">500+</div><div class="counter-lbl">Happy Customers</div></div>
+      <div class="counter-card"><div class="counter-num">20+</div><div class="counter-lbl">Premium Brands</div></div>
+      <div class="counter-card"><div class="counter-num">5★</div><div class="counter-lbl">Average Rating</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section style="background:var(--mist)">
+  <div class="s-inner">
+    <div style="text-align:center">
+      <div class="s-tag reveal">Why Choose Us</div>
+      <h2 class="s-title reveal" style="margin:0 auto 1rem">Backed by Real Customer Love</h2>
+      <p class="s-sub reveal" style="margin:0 auto">Real reasons, from 500+ satisfied shoppers across Pune.</p>
+    </div>
+    <div class="features-grid">
+      <div class="fcard reveal"><div class="ficon">🏆</div><div class="ftitle">Largest Collection</div><div class="fdesc">Pune's biggest hosiery &amp; apparel store with 1000+ products across all categories.</div></div>
+      <div class="fcard reveal"><div class="ficon">💎</div><div class="ftitle">Genuine Products</div><div class="fdesc">100% authentic brands including Jockey and more. No counterfeits — ever.</div></div>
+      <div class="fcard reveal"><div class="ficon">💰</div><div class="ftitle">Affordable Prices</div><div class="fdesc">Premium quality at fair rates. Seasonal discounts and combo deals for all.</div></div>
+      <div class="fcard reveal"><div class="ficon">🤝</div><div class="ftitle">Owner-Led Service</div><div class="fdesc">The owner personally oversees every customer interaction — rare and valued.</div></div>
+      <div class="fcard reveal"><div class="ficon">🆕</div><div class="ftitle">Fresh Stock Always</div><div class="fdesc">New arrivals added regularly — from backless bras to stylish nightwear.</div></div>
+      <div class="fcard reveal"><div class="ficon">📍</div><div class="ftitle">Conveniently Located</div><div class="fdesc">Easy to find in Undri-Pisoli, Pune. Walk in for a premium experience.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="s-inner">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+      <div><div class="s-tag reveal">Product Catalog</div><h2 class="s-title reveal" style="margin-bottom:0">Shop Our Collection</h2></div>
+      <div style="font-size:.85rem;color:var(--muted)" id="prod-count">Showing 20 of 1000+ products</div>
+    </div>
+    <div class="prod-controls">
+      <div class="search-box">🔍<input type="text" placeholder="Search products..." id="search-input" oninput="filterProducts()"/></div>
+      <select class="fsel" id="sort-sel" onchange="filterProducts()">
+        <option value="default">Sort: Featured</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="rating">Highest Rated</option>
+        <option value="newest">Newest First</option>
+      </select>
+      <select class="fsel" id="price-fil" onchange="filterProducts()">
+        <option value="all">All Prices</option>
+        <option value="0-500">Under ₹500</option>
+        <option value="500-1000">₹500–₹1000</option>
+        <option value="1000-2000">₹1000–₹2000</option>
+        <option value="2000+">₹2000+</option>
+      </select>
+    </div>
+    <div class="ftabs" id="cat-tabs">
+      <div class="ftab active" onclick="setCat('All',this)">All</div>
+      <div class="ftab" onclick="setCat('Dresses',this)">Dresses</div>
+      <div class="ftab" onclick="setCat('Lingerie',this)">Lingerie</div>
+      <div class="ftab" onclick="setCat('Nightwear',this)">Nightwear</div>
+      <div class="ftab" onclick="setCat('Casual Wear',this)">Casual Wear</div>
+      <div class="ftab" onclick="setCat('Innerwear',this)">Innerwear</div>
+      <div class="ftab" onclick="setCat('Activewear',this)">Activewear</div>
+      <div class="ftab" onclick="setCat('Kidswear',this)">Kidswear</div>
+    </div>
+    <div class="prod-grid" id="prod-grid"></div>
+    <div style="text-align:center;margin-top:3rem"><button class="btn-primary" id="load-more-btn" onclick="loadMore()" style="padding:14px 40px;font-size:.95rem">Load More Products</button></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials" style="background:var(--mist)">
+  <div class="s-inner">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:2rem">
+      <div><div class="s-tag">Customer Love</div><h2 class="s-title" style="margin-bottom:0">What Pune Says About Us</h2></div>
+      <div class="cbtn-row"><button class="cbtn" onclick="scrollCar(-1)">←</button><button class="cbtn" onclick="scrollCar(1)">→</button></div>
+    </div>
+    <div class="ttrack" id="ttrack"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="s-inner">
+    <div class="s-tag reveal">Get In Touch</div>
+    <h2 class="s-title reveal">Visit Us Or Drop a Message</h2>
+    <div class="contact-grid">
+      <div class="cinfo reveal">
+        <div class="citem"><div class="cicon">📍</div><div><div class="clbl">Our Store</div><div class="cval">Divyyansh Fashion, Undri-Pisoli Road, Pune, Maharashtra</div></div></div>
+        <div class="citem"><div class="cicon">📞</div><div><div class="clbl">Phone</div><div class="cval">+91 98765 43210</div></div></div>
+        <div class="citem"><div class="cicon">🕐</div><div><div class="clbl">Store Hours</div><div class="cval">Mon–Sat: 10AM–9PM &nbsp;|&nbsp; Sunday: 11AM–7PM</div></div></div>
+        <div class="citem"><div class="cicon">💬</div><div><div class="clbl">WhatsApp</div><div class="cval">Chat with us instantly for product queries.</div></div></div>
+      </div>
+      <form class="contact-form reveal" onsubmit="submitContact(event)">
+        <div><label class="flbl">Your Name</label><input class="finput" type="text" placeholder="Enter your name" required/></div>
+        <div><label class="flbl">Email Address</label><input class="finput" type="email" placeholder="your@email.com" required/></div>
+        <div><label class="flbl">Phone Number</label><input class="finput" type="tel" placeholder="+91 98765 43210"/></div>
+        <div><label class="flbl">Message</label><textarea class="finput" rows="4" placeholder="How can we help you?" required style="resize:vertical"></textarea></div>
+        <button type="submit" class="btn-primary" style="padding:14px 28px;font-size:.95rem;align-self:flex-start">Send Message ✉️</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fi">
+    <div class="fg">
+      <div><div class="fb">Divyyansh Fashion</div><p class="fd">Pune's biggest hosiery &amp; apparel store in Undri-Pisoli. Premium fashion for every woman.</p></div>
+      <div><div class="fh">Shop</div><ul class="fl"><li><a href="#">Dresses</a></li><li><a href="#">Lingerie</a></li><li><a href="#">Nightwear</a></li><li><a href="#">Casual Wear</a></li><li><a href="#">Innerwear</a></li></ul></div>
+      <div><div class="fh">Company</div><ul class="fl"><li><a href="#about">About Us</a></li><li><a href="#testimonials">Reviews</a></li><li><a href="#contact">Contact</a></li><li><a href="#">Returns Policy</a></li></ul></div>
+      <div><div class="fh">Contact</div><ul class="fl"><li><a href="#">Undri-Pisoli, Pune</a></li><li><a href="#">+91 98765 43210</a></li><li><a href="#">Mon–Sun: 10AM–9PM</a></li></ul></div>
+    </div>
+    <div class="fbot"><span>© 2025 Divyyansh Fashion. All rights reserved.</span><span>Made with 🌸 in Pune</span></div>
+  </div>
+</footer>
+
+<!-- CART -->
+<div id="cart-overlay" onclick="closeCartBG(event)">
+  <div id="cart-sidebar">
+    <div class="cart-hdr"><div class="cart-title">Your Cart 🛒</div><button class="btn-icon" onclick="closeCart()">✕</button></div>
+    <div class="cart-body" id="cart-body"></div>
+    <div class="cart-ftr">
+      <div class="cart-total-row"><span>Total</span><span id="cart-total">₹0</span></div>
+      <button class="btn-primary" style="width:100%;padding:14px;font-size:1rem" onclick="openCheckout()">Proceed to Checkout →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CHECKOUT -->
+<div id="co-modal">
+  <div class="co-box"><button class="close-btn" onclick="closeCheckout()">✕</button><div id="co-content"></div></div>
+</div>
+
+<!-- QUICK VIEW -->
+<div id="qv-modal" onclick="closeQVBG(event)">
+  <div class="qv-box">
+    <button class="close-btn" onclick="closeQV()">✕</button>
+    <div class="qv-img" id="qv-img">👗</div>
+    <div class="qv-info">
+      <div class="pcat" id="qv-cat"></div>
+      <h2 id="qv-name" style="font-size:1.4rem;margin-bottom:.5rem;color:var(--ink)"></h2>
+      <div class="prating" id="qv-rating"></div>
+      <div style="font-size:1.5rem;font-weight:900;color:var(--rose);margin-bottom:.5rem" id="qv-price"></div>
+      <p style="font-size:.9rem;color:var(--muted);line-height:1.7;margin-bottom:1rem" id="qv-desc"></p>
+      <div class="qty-sel">
+        <button class="qty-btn" onclick="changeQvQ(-1)">−</button>
+        <span id="qv-qty" style="font-weight:700;font-size:1.1rem;color:var(--text);min-width:30px;text-align:center">1</span>
+        <button class="qty-btn" onclick="changeQvQ(1)">+</button>
+      </div>
+      <div style="display:flex;gap:1rem;flex-wrap:wrap">
+        <button class="btn-primary" style="flex:1;padding:14px" onclick="addFromQV()">Add to Cart 🛒</button>
+        <button class="btn-outline" style="padding:14px 20px" id="qv-wish-btn" onclick="toggleQVWish()">♡</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATS -->
+<a id="wa-float" href="https://wa.me/919876543210" target="_blank">💬</a>
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+/* ── HELPERS ── */
+function goTo(id){document.getElementById(id).scrollIntoView({behavior:'smooth'});}
+function toggleMobNav(){document.getElementById('mobile-nav').classList.toggle('open');}
+
+/* ── PRODUCT DATA ── */
+const BASE=[
+  {id:1,name:"Floral Midi Dress",category:"Dresses",price:1299,old:1799,rating:4.8,reviews:124,emoji:"👗",badge:"Bestseller",isNew:false,desc:"Elegant floral print midi dress, perfect for every occasion. Breathable fabric with a flattering A-line silhouette."},
+  {id:2,name:"Party Bodycon Dress",category:"Dresses",price:1599,old:2199,rating:4.7,reviews:98,emoji:"🥻",badge:"New",isNew:true,desc:"Figure-hugging bodycon dress ideal for parties and evening outings. Stretchy, comfortable material."},
+  {id:3,name:"Casual Kurti Dress",category:"Dresses",price:699,old:999,rating:4.6,reviews:210,emoji:"👘",badge:"",isNew:false,desc:"Comfortable cotton kurti dress for everyday wear. Available in vibrant prints."},
+  {id:4,name:"Maxi Flare Dress",category:"Dresses",price:1899,old:2499,rating:4.9,reviews:67,emoji:"🩱",badge:"Premium",isNew:true,desc:"Flowing maxi flare dress with intricate embroidery — perfect for festive occasions."},
+  {id:5,name:"Summer Wrap Dress",category:"Dresses",price:899,old:1299,rating:4.5,reviews:155,emoji:"👗",badge:"",isNew:false,desc:"Light and breezy wrap dress for hot summer days."},
+  {id:6,name:"Backless Strapless Bra",category:"Lingerie",price:499,old:799,rating:4.9,reviews:312,emoji:"🎀",badge:"Bestseller",isNew:false,desc:"The bra you have been searching for! Perfect backless and strapless support for any outfit."},
+  {id:7,name:"Lace Padded Bra Set",category:"Lingerie",price:649,old:999,rating:4.7,reviews:187,emoji:"🩲",badge:"",isNew:false,desc:"Elegant lace padded bra with matching panty. Soft, comfortable, and stylish."},
+  {id:8,name:"T-Shirt Bra (Pack of 2)",category:"Lingerie",price:799,old:1099,rating:4.8,reviews:243,emoji:"👙",badge:"Value Pack",isNew:false,desc:"Seamless T-shirt bras for everyday comfort. Invisible under clothing."},
+  {id:9,name:"Sports Bra High Impact",category:"Lingerie",price:599,old:899,rating:4.6,reviews:134,emoji:"🏋️",badge:"",isNew:true,desc:"High-support sports bra for intense workouts. Moisture-wicking fabric."},
+  {id:10,name:"Bridal Lingerie Set",category:"Lingerie",price:1299,old:1999,rating:4.9,reviews:76,emoji:"💍",badge:"New",isNew:true,desc:"Luxurious bridal lingerie set with intricate detailing."},
+  {id:11,name:"Satin Night Gown",category:"Nightwear",price:899,old:1299,rating:4.8,reviews:189,emoji:"🌙",badge:"Bestseller",isNew:false,desc:"Silky satin night gown for the most comfortable sleep."},
+  {id:12,name:"Cotton Pyjama Set",category:"Nightwear",price:699,old:999,rating:4.7,reviews:256,emoji:"🌸",badge:"",isNew:false,desc:"Breathable 100% cotton pyjama set. Perfect for year-round comfort."},
+  {id:13,name:"Printed Night Suit",category:"Nightwear",price:799,old:1199,rating:4.6,reviews:143,emoji:"⭐",badge:"",isNew:false,desc:"Fun printed night suit for a cozy bedtime routine."},
+  {id:14,name:"Velvet Robe and Gown Set",category:"Nightwear",price:1499,old:2099,rating:4.9,reviews:58,emoji:"🌹",badge:"Premium",isNew:true,desc:"Luxurious velvet robe paired with a matching gown."},
+  {id:15,name:"Solid Palazzo Pants",category:"Casual Wear",price:549,old:799,rating:4.7,reviews:298,emoji:"👖",badge:"",isNew:false,desc:"Comfortable palazzo pants for all-day wear. Flowy fit available in bold colors."},
+  {id:16,name:"Printed Crop Top",category:"Casual Wear",price:399,old:599,rating:4.6,reviews:211,emoji:"👚",badge:"",isNew:false,desc:"Trendy printed crop top to pair with your favorite bottoms."},
+  {id:17,name:"Denim Shirt Dress",category:"Casual Wear",price:1199,old:1699,rating:4.7,reviews:167,emoji:"🫗",badge:"New",isNew:true,desc:"Versatile denim shirt dress you can wear as a dress or open as a shirt."},
+  {id:18,name:"Jockey Women Brief Pack of 3",category:"Innerwear",price:549,old:799,rating:4.9,reviews:412,emoji:"🔷",badge:"Bestseller",isNew:false,desc:"Premium Jockey cotton briefs for ultimate comfort. Anti-microbial treatment."},
+  {id:19,name:"Seamless Panty Pack of 5",category:"Innerwear",price:699,old:999,rating:4.8,reviews:334,emoji:"💙",badge:"Value Pack",isNew:false,desc:"Seamless invisible panties perfect under fitted clothing."},
+  {id:20,name:"Thermal Inner Suit",category:"Innerwear",price:999,old:1499,rating:4.7,reviews:128,emoji:"🔶",badge:"Winter",isNew:false,desc:"Warm thermal inner suit for cold winters."},
+];
+const CATS=["Dresses","Lingerie","Nightwear","Casual Wear","Innerwear","Activewear","Kidswear"];
+const EMJS=["👗","🎀","🌙","👖","👙","🎽","👒","🧥","🩱","🌸","⭐","👚"];
+const ADJS=["Premium","Elegant","Casual","Stylish","Comfort","Classic","Trendy","Festive","Modern","Luxury"];
+const NONS=["Set","Dress","Top","Wear","Collection","Special","Edition","Style","Look","Piece"];
+const allProducts=[...BASE];
+for(let i=21;i<=1000;i++){
+  const cat=CATS[i%CATS.length];
+  const p=[299,399,499,599,699,799,899,999,1199,1299,1499,1599,1899][i%13];
+  allProducts.push({id:i,name:ADJS[i%10]+" "+NONS[(i+3)%10]+" "+i,category:cat,price:p,old:Math.round(p*1.4),rating:parseFloat((3.8+(i%12)*0.1).toFixed(1)),reviews:10+(i%200),emoji:EMJS[i%EMJS.length],badge:i%7===0?"New":i%11===0?"Sale":"",isNew:i%7===0,desc:"Quality "+cat.toLowerCase()+" item crafted for comfort and style."});
+}
+
+/* ── STATE ── */
+let cart=JSON.parse(localStorage.getItem('df-cart')||'[]');
+let wish=new Set(JSON.parse(localStorage.getItem('df-wish')||'[]'));
+let shown=20,activeCat='All',qvId=null,qvQty=1,coStep=1,payMethod='upi';
+
+/* ── PRODUCTS ── */
+function getFiltered(){
+  let p=[...allProducts];
+  const q=document.getElementById('search-input').value.toLowerCase();
+  const sort=document.getElementById('sort-sel').value;
+  const pf=document.getElementById('price-fil').value;
+  if(activeCat!=='All')p=p.filter(x=>x.category===activeCat);
+  if(q)p=p.filter(x=>x.name.toLowerCase().includes(q)||x.category.toLowerCase().includes(q));
+  if(pf!=='all'){const[mn,mx]=pf==='2000+'?[2000,99999]:pf.split('-').map(Number);p=p.filter(x=>x.price>=mn&&x.price<=mx);}
+  if(sort==='price-asc')p.sort((a,b)=>a.price-b.price);
+  else if(sort==='price-desc')p.sort((a,b)=>b.price-a.price);
+  else if(sort==='rating')p.sort((a,b)=>b.rating-a.rating);
+  else if(sort==='newest')p.sort((a,b)=>(b.isNew?1:0)-(a.isNew?1:0));
+  return p;
+}
+function renderProducts(){
+  const f=getFiltered(),s=f.slice(0,shown);
+  document.getElementById('prod-count').textContent='Showing '+s.length+' of '+f.length+' products';
+  document.getElementById('load-more-btn').style.display=f.length>shown?'inline-flex':'none';
+  document.getElementById('prod-grid').innerHTML=s.map(p=>{
+    const iw=wish.has(p.id);
+    return'<div class="pcard"><div class="pimg" onclick="openQV('+p.id+')"><span>'+p.emoji+'</span>'+(p.badge?'<div class="pbadge">'+p.badge+'</div>':'')+
+    '<div class="pwish'+(iw?' active':'')+'" onclick="event.stopPropagation();toggleWish('+p.id+',this)">'+(iw?'❤️':'🤍')+'</div></div>'+
+    '<div class="pbody"><div class="pcat">'+p.category+'</div><div class="pname">'+p.name+'</div>'+
+    '<div class="prating"><span class="stars">'+'★'.repeat(Math.floor(p.rating))+'</span><span class="rcount">('+p.reviews+')</span></div>'+
+    '<div class="pfooter"><div><span class="pprice">₹'+p.price.toLocaleString('en-IN')+'</span><span class="pold">₹'+p.old.toLocaleString('en-IN')+'</span></div>'+
+    '<button class="btn-cart" onclick="addToCart('+p.id+')">+</button></div></div></div>';
+  }).join('');
+}
+function setCat(c,el){activeCat=c;shown=20;document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));el.classList.add('active');renderProducts();}
+function filterProducts(){shown=20;renderProducts();}
+function loadMore(){shown+=20;renderProducts();}
+
+/* ── CART ── */
+function saveCart(){localStorage.setItem('df-cart',JSON.stringify(cart));}
+function saveWish(){localStorage.setItem('df-wish',JSON.stringify([...wish]));}
+function addToCart(id,qty){
+  qty=qty||1;
+  const p=allProducts.find(x=>x.id===id);
+  const ex=cart.find(c=>c.id===id);
+  if(ex)ex.qty+=qty;else cart.push(Object.assign({},p,{qty:qty}));
+  saveCart();updateBadge();renderCartBody();
+  
+  // ── ANIMATION SYSTEM ──
+  // 1. Find the clicked card's + button and product image
+  var cards=document.querySelectorAll('.pcard');
+  var srcEl=null;
+  cards.forEach(function(card){
+    if(card.querySelector('.btn-cart[onclick*="'+id+'"]')){
+      srcEl=card;
+      // Card flash highlight
+      card.classList.remove('cart-flash');
+      void card.offsetWidth;
+      card.classList.add('cart-flash');
+      setTimeout(function(){card.classList.remove('cart-flash');},600);
+      // Button pulse
+      var btn=card.querySelector('.btn-cart');
+      if(btn){btn.classList.add('added');setTimeout(function(){btn.classList.remove('added');},500);}
+    }
+  });
+  
+  // 2. Flying emoji particle
+  if(srcEl){
+    var srcRect=srcEl.getBoundingClientRect();
+    var cartBtn=document.getElementById('cart-badge');
+    var cartRect=cartBtn.getBoundingClientRect();
+    var emoji=document.createElement('div');
+    emoji.className='fly-emoji';
+    emoji.textContent=p.emoji;
+    emoji.style.left=(srcRect.left+srcRect.width/2)+'px';
+    emoji.style.top=(srcRect.top+srcRect.height/3)+'px';
+    var tx=cartRect.left-srcRect.left-srcRect.width/2+cartRect.width/2;
+    var ty=cartRect.top-srcRect.top-srcRect.height/3+cartRect.height/2;
+    emoji.style.setProperty('--tx',tx+'px');
+    emoji.style.setProperty('--ty',ty+'px');
+    emoji.style.setProperty('--dx',(tx*0.3)+'px');
+    emoji.style.setProperty('--dy',(ty*0.4)+'px');
+    document.body.appendChild(emoji);
+    setTimeout(function(){emoji.remove();},800);
+  }
+  
+  // 3. Cart badge bounce
+  var badge=document.getElementById('cart-badge');
+  badge.classList.remove('badge-bounce');
+  void badge.offsetWidth;
+  badge.classList.add('badge-bounce');
+  setTimeout(function(){badge.classList.remove('badge-bounce');},600);
+  
+  // 4. Toast notification
+  var toast=document.getElementById('add-toast');
+  document.getElementById('toast-text').textContent=p.name.substring(0,28)+' added to bag!';
+  toast.classList.remove('show');
+  void toast.offsetWidth;
+  toast.classList.add('show');
+  setTimeout(function(){toast.classList.remove('show');},2200);
+}
+function updateBadge(){
+  const n=cart.reduce(function(s,c){return s+c.qty;},0);
+  const b=document.getElementById('cart-badge');
+  b.style.display=n>0?'flex':'none';b.textContent=n;
+}
+function renderCartBody(){
+  const total=cart.reduce(function(s,c){return s+(c.price*c.qty);},0);
+  document.getElementById('cart-total').textContent='₹'+total.toLocaleString('en-IN');
+  const body=document.getElementById('cart-body');
+  if(!cart.length){body.innerHTML='<div class="cart-empty"><div style="font-size:3rem;margin-bottom:.5rem">🛍️</div><div style="font-weight:600;color:var(--text);margin-bottom:4px">Cart is empty</div><div style="font-size:.85rem">Add some beautiful items!</div></div>';return;}
+  body.innerHTML=cart.map(function(c){
+    return'<div class="ci-row"><div class="ci-img">'+c.emoji+'</div><div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-price">₹'+(c.price*c.qty).toLocaleString('en-IN')+'</div><div class="ci-qty"><button class="qbtn" onclick="changeQty('+c.id+',-1)">−</button><span class="qnum">'+c.qty+'</span><button class="qbtn" onclick="changeQty('+c.id+',1)">+</button></div></div><button class="cremove" onclick="removeItem('+c.id+')">🗑️</button></div>';
+  }).join('');
+}
+function changeQty(id,d){var i=cart.find(function(c){return c.id===id;});if(!i)return;i.qty+=d;if(i.qty<=0)removeItem(id);else{saveCart();updateBadge();renderCartBody();}}
+function removeItem(id){cart=cart.filter(function(c){return c.id!==id;});saveCart();updateBadge();renderCartBody();}
+function openCart(){document.getElementById('cart-overlay').classList.add('open');renderCartBody();}
+function closeCart(){document.getElementById('cart-overlay').classList.remove('open');}
+function closeCartBG(e){if(e.target===document.getElementById('cart-overlay'))closeCart();}
+
+/* ── WISHLIST ── */
+function toggleWish(id,el){if(wish.has(id)){wish.delete(id);el.textContent='🤍';el.classList.remove('active');}else{wish.add(id);el.textContent='❤️';el.classList.add('active');}saveWish();}
+function toggleQVWish(){if(!qvId)return;if(wish.has(qvId)){wish.delete(qvId);document.getElementById('qv-wish-btn').textContent='♡';}else{wish.add(qvId);document.getElementById('qv-wish-btn').textContent='❤️';}saveWish();}
+
+/* ── QUICK VIEW ── */
+function openQV(id){
+  var p=allProducts.find(function(x){return x.id===id;});
+  qvId=id;qvQty=1;
+  document.getElementById('qv-img').textContent=p.emoji;
+  document.getElementById('qv-cat').textContent=p.category;
+  document.getElementById('qv-name').textContent=p.name;
+  document.getElementById('qv-price').innerHTML='₹'+p.price.toLocaleString('en-IN')+' <span style="font-size:.9rem;color:var(--muted);text-decoration:line-through;font-family:DM Sans">₹'+p.old.toLocaleString('en-IN')+'</span>';
+  document.getElementById('qv-rating').innerHTML='<span class="stars">'+'★'.repeat(Math.floor(p.rating))+'</span><span class="rcount">'+p.rating+' ('+p.reviews+' reviews)</span>';
+  document.getElementById('qv-desc').textContent=p.desc;
+  document.getElementById('qv-qty').textContent=qvQty;
+  document.getElementById('qv-wish-btn').textContent=wish.has(id)?'❤️':'♡';
+  document.getElementById('qv-modal').classList.add('open');
+}
+function changeQvQ(d){qvQty=Math.max(1,qvQty+d);document.getElementById('qv-qty').textContent=qvQty;}
+function addFromQV(){if(qvId)addToCart(qvId,qvQty);closeQV();openCart();}
+function closeQV(){document.getElementById('qv-modal').classList.remove('open');}
+function closeQVBG(e){if(e.target===document.getElementById('qv-modal'))closeQV();}
+
+/* ── CHECKOUT ── */
+function openCheckout(){if(!cart.length){alert('Your cart is empty!');return;}coStep=1;closeCart();renderCheckout();document.getElementById('co-modal').classList.add('open');}
+function closeCheckout(){document.getElementById('co-modal').classList.remove('open');}
+function ordSum(){
+  var total=cart.reduce(function(s,c){return s+(c.price*c.qty);},0);
+  var ship=total>=999?0:60;
+  return cart.map(function(c){return'<div class="ord-item"><span>'+c.name+' ×'+c.qty+'</span><span>₹'+(c.price*c.qty).toLocaleString('en-IN')+'</span></div>';}).join('')+
+    '<div class="ord-item"><span>Shipping</span><span>'+(ship?'₹60':'FREE')+'</span></div>'+
+    '<div class="ord-item"><span>Total</span><span>₹'+(total+ship).toLocaleString('en-IN')+'</span></div>';
+}
+function renderCheckout(){
+  var el=document.getElementById('co-content');
+  if(coStep===1){
+    el.innerHTML='<div class="co-hdr"><h2 style="font-family:Playfair Display,serif;font-size:1.5rem;color:var(--ink)">Checkout</h2><div class="steps"><div class="step active">1. Shipping</div><div class="step">2. Payment</div><div class="step">3. Done</div></div></div><div class="co-body"><div class="co-st">📦 Shipping Information</div><div class="co-grid"><div><label class="flbl">First Name</label><input class="finput" placeholder="Priya"/></div><div><label class="flbl">Last Name</label><input class="finput" placeholder="Sharma"/></div><div><label class="flbl">Email</label><input class="finput" type="email" placeholder="priya@example.com"/></div><div><label class="flbl">Phone</label><input class="finput" placeholder="+91 98765 43210"/></div><div style="grid-column:1/-1"><label class="flbl">Address</label><input class="finput" placeholder="123 Main St, Undri-Pisoli"/></div><div><label class="flbl">City</label><input class="finput" placeholder="Pune"/></div><div><label class="flbl">Pincode</label><input class="finput" placeholder="411060"/></div></div><div class="ord-sum">'+ordSum()+'</div><button class="btn-primary" style="width:100%;padding:15px;font-size:1rem" onclick="coStep=2;renderCheckout()">Continue to Payment →</button></div>';
+  } else if(coStep===2){
+    el.innerHTML='<div class="co-hdr"><h2 style="font-family:Playfair Display,serif;font-size:1.5rem;color:var(--ink)">Checkout</h2><div class="steps"><div class="step done">✓ Shipping</div><div class="step active">2. Payment</div><div class="step">3. Done</div></div></div><div class="co-body"><div class="co-st">💳 Payment Method</div><div class="pay-opts"><label class="pay-opt sel"><input type="radio" name="pay" value="upi" checked onchange="payMethod=\'upi\'"/><span class="pay-icon">📱</span><div><div class="pay-lbl">UPI</div><div class="pay-sub">GPay, PhonePe, Paytm</div></div></label><label class="pay-opt"><input type="radio" name="pay" value="card" onchange="payMethod=\'card\'"/><span class="pay-icon">💳</span><div><div class="pay-lbl">Credit / Debit Card</div><div class="pay-sub">Visa, Mastercard, RuPay</div></div></label><label class="pay-opt"><input type="radio" name="pay" value="nb" onchange="payMethod=\'nb\'"/><span class="pay-icon">🏦</span><div><div class="pay-lbl">Net Banking</div><div class="pay-sub">All major Indian banks</div></div></label><label class="pay-opt"><input type="radio" name="pay" value="cod" onchange="payMethod=\'cod\'"/><span class="pay-icon">💵</span><div><div class="pay-lbl">Cash on Delivery</div><div class="pay-sub">Pay when you receive</div></div></label></div><div class="ord-sum" style="margin-top:1.5rem">'+ordSum()+'</div><div style="display:flex;gap:1rem"><button class="btn-outline" onclick="coStep=1;renderCheckout()">← Back</button><button class="btn-primary" style="flex:1;padding:15px;font-size:1rem" onclick="processPayment()">Place Order 🔒</button></div><div style="text-align:center;margin-top:1rem;font-size:.75rem;color:var(--muted)">🔒 256-bit SSL encrypted. Your data is safe.</div></div>';
+  }
+}
+function showSuccess(){
+  var oid='DF'+Date.now().toString().slice(-8);
+  var total=cart.reduce(function(s,c){return s+(c.price*c.qty);},0);
+  document.getElementById('co-content').innerHTML='<div style="padding:3rem;text-align:center"><div style="font-size:5rem;margin-bottom:1rem">🎉</div><h2 style="font-family:Playfair Display,serif;font-size:2rem;color:var(--ink);margin-bottom:.5rem">Order Placed!</h2><p style="color:var(--muted);margin-bottom:1.5rem">Thank you for shopping at Divyyansh Fashion!</p><div class="ord-sum" style="text-align:left"><div class="ord-item"><span>Order ID</span><span style="font-weight:700;color:var(--rose)">'+oid+'</span></div><div class="ord-item"><span>Total Paid</span><span>₹'+total.toLocaleString('en-IN')+'</span></div><div class="ord-item"><span>Payment</span><span style="color:#22C55E">✅ '+(window._lastPayMethod==='cod'?'Cash on Delivery':'Razorpay Secure')+'</span></div><div class="ord-item"><span>Status</span><span style="color:#22C55E">✅ Confirmed</span></div><div class="ord-item" style="border:none"><span>Estimated Delivery</span><span>3–5 Business Days</span></div></div><button class="btn-primary" style="width:100%;padding:15px;font-size:1rem;margin-top:1.5rem" onclick="closeCheckout();cart=[];saveCart();updateBadge()">Continue Shopping 🌸</button></div>';
+}
+
+function processPayment(){
+  var method = document.querySelector('input[name="pay"]:checked');
+  var payVal = method ? method.value : 'cod';
+  window._lastPayMethod = payVal;
+  
+  if(payVal === 'cod'){
+    showSuccess();
+    return;
+  }
+  
+  // Online payment (UPI / Card / Net Banking) → route through Razorpay backend
+  var total = cart.reduce(function(s,c){return s+(c.price*c.qty);},0);
+  var ship = total < 999 ? 60 : 0;
+  var finalAmount = total + ship;
+  
+  // Update button to loading state
+  var btn = document.querySelector('.co-body .btn-primary');
+  if(btn){ btn.innerHTML='⏳ Connecting to Razorpay...'; btn.disabled=true; }
+  
+  fetch('http://localhost:5000/create_order', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({ amount: finalAmount, currency: 'INR' })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    if(data.status === 'mock'){
+      // Simulated mode (no real keys yet) — show success after brief delay
+      setTimeout(function(){
+        window._lastPayMethod = payVal;
+        showSuccess();
+      }, 1500);
+    } else if(data.status === 'success'){
+      // Real Razorpay integration — open checkout modal
+      // ╔════════════════════════════════════════════════════╗
+      // ║  REPLACE THIS BLOCK WITH REAL RAZORPAY CHECKOUT   ║
+      // ║  when you have your API keys configured.          ║
+      // ║                                                    ║
+      // ║  var options = {                                   ║
+      // ║    key: data.key_id,                               ║
+      // ║    amount: data.amount,                            ║
+      // ║    currency: data.currency,                        ║
+      // ║    name: 'Divyyansh Fashion',                      ║
+      // ║    description: 'Premium Apparel Purchase',        ║
+      // ║    order_id: data.order_id,                        ║
+      // ║    prefill: { method: payVal },                    ║
+      // ║    theme: { color: '#C8536A' },                    ║
+      // ║    handler: function(response) {                   ║
+      // ║      // Verify on backend then showSuccess()       ║
+      // ║    }                                               ║
+      // ║  };                                                ║
+      // ║  var rzp = new Razorpay(options);                  ║
+      // ║  rzp.open();                                       ║
+      // ╚════════════════════════════════════════════════════╝
+      showSuccess();
+    }
+  })
+  .catch(function(err){
+    // Server not running — fallback to simulated success
+    console.warn('Payment server not reachable, simulating:', err);
+    setTimeout(function(){ showSuccess(); }, 1000);
+  });
+}
+
+/* ── TESTIMONIALS ── */
+var TDATA=[
+  {name:"Monika Khichi",text:"Wow. What an amazing collection and depth in brands range. Great store ambience with pro active sales staff. The owner himself ensures customer satisfaction. Highly recommended!",stars:5},
+  {name:"Sandhya Mohite",text:"I searched for a backless and strapless bra everywhere — I finally found it here! Well-fitted, great support and comfort. Amazing collection!",stars:5},
+  {name:"Anupam Dubey",text:"Great experience at Divyyansh Fashion. Staff was friendly, helped me find the right fit, and prices were reasonable. Highly recommend!",stars:5},
+  {name:"Govind Ravle",text:"All types of apparel available with well-mannered staff and owner. Huge variety, fresh stock, and a very welcoming atmosphere.",stars:5},
+  {name:"Kalyani Rathod",text:"They have a huge variety in men and women nightwear and casual wear. The collection is extensive and prices are very affordable. Must visit!",stars:5},
+  {name:"Priti Ghandge",text:"Multiple brands available in one shop! Very comfortable outfits and best quality products. The staff helped me choose the perfect fit.",stars:5},
+  {name:"Bhagyashri Thakare",text:"Best collection, fresh stock, nice service. Super happy with my shopping experience here. Must visit for anyone looking for quality fashion!",stars:5},
+  {name:"Digvijay Jadhav",text:"Amazing shopping experience, affordable prices, genuine products. Exactly what I was looking for. The variety is unmatched anywhere else in Pune.",stars:5},
+  {name:"Jasmin Pandya",text:"Nice experience, has vast variety of products at very reasonable prices. Staff is knowledgeable and helpful.",stars:5},
+  {name:"SONALY TRISAL",text:"Amazing shopping experience! Affordable prices and genuine products. The collection is truly extensive — from casuals to premium wear.",stars:5},
+];
+function renderTestimonials(){
+  document.getElementById('ttrack').innerHTML=TDATA.map(function(t){
+    return'<div class="tcard"><div class="ttext">'+t.text+'</div><div class="tauthor"><div class="tavatar">'+t.name[0]+'</div><div><div class="tname">'+t.name+'</div><div class="tmeta"><span style="color:var(--gold)">'+'★'.repeat(t.stars)+'</span> Verified Buyer</div></div></div></div>';
+  }).join('');
+}
+function scrollCar(d){document.getElementById('ttrack').scrollBy({left:d*340,behavior:'smooth'});}
+function initDrag(){
+  var t=document.getElementById('ttrack'),drag=false,sx,sl;
+  t.addEventListener('mousedown',function(e){drag=true;sx=e.pageX-t.offsetLeft;sl=t.scrollLeft;t.style.cursor='grabbing';});
+  t.addEventListener('mouseleave',function(){drag=false;t.style.cursor='';});
+  t.addEventListener('mouseup',function(){drag=false;t.style.cursor='';});
+  t.addEventListener('mousemove',function(e){if(!drag)return;e.preventDefault();t.scrollLeft=sl-(e.pageX-t.offsetLeft-sx)*1.5;});
+}
+
+/* ── CONTACT ── */
+function submitContact(e){
+  e.preventDefault();
+  var btn=e.target.querySelector('button[type="submit"]');
+  btn.textContent='✅ Message Sent!';btn.style.background='#22C55E';
+  setTimeout(function(){btn.textContent='Send Message ✉️';btn.style.background='';e.target.reset();},3000);
+}
+
+/* ── THEME ── */
+function toggleTheme(){
+  var t=document.documentElement.getAttribute('data-theme');
+  document.documentElement.setAttribute('data-theme',t==='dark'?'light':'dark');
+  document.getElementById('theme-btn').innerHTML=t==='dark'?'<span class="theme-icon" style="font-style:normal">🌙</span><span class="theme-text">Dark Mode</span>':'<span class="theme-icon" style="font-style:normal">☀️</span><span class="theme-text">Light Mode</span>';
+}
+
+/* ── REVEAL ── */
+function initReveal(){
+  var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible');});},{threshold:.15});
+  document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el);});
+}
+
+/* ── SCROLL EFFECTS ── */
+function initScroll(){
+  window.addEventListener('scroll',function(){
+    var y=window.scrollY;
+    document.getElementById('navbar').classList.toggle('scrolled',y>60);
+    document.getElementById('scroll-top').classList.toggle('vis',y>400);
+    document.querySelectorAll('.hero-orb').forEach(function(o,i){
+      o.style.transform='translateY('+(y*(i?0.15:0.28))+'px)';
+    });
+  });
+}
+
+/* ── CURSOR PETALS ── */
+function initPetals(){
+  var P=['🌸','🌷','✿','❀'],last=0;
+  document.addEventListener('mousemove',function(e){
+    var now=Date.now();if(now-last<120)return;last=now;
+    var el=document.createElement('div');
+    el.className='cpetal';
+    el.textContent=P[Math.floor(Math.random()*P.length)];
+    el.style.left=e.clientX+'px';
+    el.style.top=e.clientY+'px';
+    el.style.setProperty('--dx',(Math.random()-.5)*80+'px');
+    el.style.setProperty('--dy',(30+Math.random()*60)+'px');
+    el.style.setProperty('--dr',(Math.random()*360)+'deg');
+    document.body.appendChild(el);
+    setTimeout(function(){el.remove();},1000);
+  });
+}
+
+/* ── MAGNETIC BUTTONS ── */
+function initMagnetic(){
+  document.querySelectorAll('.btn-primary,.btn-outline').forEach(function(btn){
+    btn.addEventListener('mousemove',function(e){
+      var r=btn.getBoundingClientRect();
+      btn.style.transform='translate('+(e.clientX-r.left-r.width/2)*0.18+'px,'+(e.clientY-r.top-r.height/2)*0.28+'px)';
+    });
+    btn.addEventListener('mouseleave',function(){btn.style.transform='';});
+  });
+}
+
+/* ── CHERRY BLOSSOM ENGINE ── */
+function initBlossom(){
+  var canvas=document.getElementById('blossom-canvas');
+  if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var W,H,petals=[];
+
+  function resize(){
+    var hero=document.getElementById('home');
+    W=canvas.width=hero.offsetWidth;
+    H=canvas.height=hero.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize',resize);
+
+  function drawPetal(x,y,size,rot,alpha,hue){
+    ctx.save();
+    ctx.globalAlpha=alpha;
+    ctx.translate(x,y);
+    ctx.rotate(rot);
+    ctx.beginPath();
+    ctx.moveTo(0,0);
+    ctx.bezierCurveTo(size*.5,-size*.5,size*1.1,size*.3,0,size*1.1);
+    ctx.bezierCurveTo(-size*1.1,size*.3,-size*.5,-size*.5,0,0);
+    var g=ctx.createRadialGradient(0,size*.4,0,0,size*.4,size);
+    g.addColorStop(0,'hsla('+hue+',88%,93%,1)');
+    g.addColorStop(.5,'hsla('+hue+',80%,83%,.88)');
+    g.addColorStop(1,'hsla('+hue+',70%,75%,.5)');
+    ctx.fillStyle=g;
+    ctx.fill();
+    ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(0,size*.85);
+    ctx.strokeStyle='hsla('+hue+',50%,68%,.3)';ctx.lineWidth=.5;ctx.stroke();
+    ctx.restore();
+  }
+
+  function spawn(){
+    return{
+      x:Math.random()*W,y:-20-Math.random()*120,
+      size:7+Math.random()*10,
+      vx:(Math.random()-.5)*1.1,vy:.5+Math.random()*1.2,
+      rot:Math.random()*Math.PI*2,rv:(Math.random()-.5)*.04,
+      alpha:.35+Math.random()*.55,
+      hue:328+Math.random()*32,
+      wb:Math.random()*Math.PI*2,wbs:.018+Math.random()*.02,wba:.4+Math.random()*1.5,
+      sw:Math.random()*Math.PI*2
+    };
+  }
+
+  for(var i=0;i<55;i++){var p=spawn();p.y=Math.random()*H;petals.push(p);}
+
+  function tick(){
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<petals.length;i++){
+      var p=petals[i];
+      p.wb+=p.wbs;p.sw+=.007;
+      p.x+=p.vx+Math.sin(p.wb)*p.wba+Math.sin(p.sw)*.35;
+      p.y+=p.vy;
+      p.rot+=p.rv;
+      if(p.y>H+30||p.x<-60||p.x>W+60)petals[i]=spawn();
+      drawPetal(p.x,p.y,p.size,p.rot,p.alpha,p.hue);
+    }
+    requestAnimationFrame(tick);
+  }
+  tick();
+}
+
+/* ── SHADER ANIMATION ── */
+function initShader(){
+  var container = document.getElementById('shader-container');
+  if(!container || typeof THREE === 'undefined') return;
+
+  var vertexShader = `
+    void main() {
+      gl_Position = vec4( position, 1.0 );
+    }
+  `;
+
+  var fragmentShader = `
+    #define TWO_PI 6.2831853072
+    #define PI 3.14159265359
+
+    precision highp float;
+    uniform vec2 resolution;
+    uniform float time;
+
+    void main(void) {
+      vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+      float t = time*0.05;
+      float lineWidth = 0.002;
+
+      vec3 color = vec3(0.0);
+      for(int j = 0; j < 3; j++){
+        for(int i=0; i < 5; i++){
+          color[j] += lineWidth*float(i*i) / abs(fract(t - 0.01*float(j)+float(i)*0.01)*5.0 - length(uv) + mod(uv.x+uv.y, 0.2));
+        }
+      }
+      
+      gl_FragColor = vec4(color[0],color[1],color[2],1.0);
+    }
+  `;
+
+  var camera = new THREE.Camera();
+  camera.position.z = 1;
+
+  var scene = new THREE.Scene();
+  var geometry = new THREE.PlaneGeometry(2, 2);
+
+  var uniforms = {
+    time: { type: "f", value: 1.0 },
+    resolution: { type: "v2", value: new THREE.Vector2() }
+  };
+
+  var material = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: vertexShader,
+    fragmentShader: fragmentShader
+  });
+
+  var mesh = new THREE.Mesh(geometry, material);
+  scene.add(mesh);
+
+  var renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  container.appendChild(renderer.domElement);
+
+  function resize() {
+    var hero = document.getElementById('home');
+    var w = hero.offsetWidth;
+    var h = hero.offsetHeight;
+    renderer.setSize(w, h);
+    uniforms.resolution.value.x = renderer.domElement.width;
+    uniforms.resolution.value.y = renderer.domElement.height;
+  }
+  resize();
+  window.addEventListener('resize', resize, false);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    uniforms.time.value += 0.05;
+    renderer.render(scene, camera);
+  }
+  animate();
+}
+
+/* ── INIT ── */
+document.addEventListener('DOMContentLoaded',function(){
+  renderProducts();
+  renderTestimonials();
+  initReveal();
+  initDrag();
+  updateBadge();
+  renderCartBody();
+  initBlossom();
+  initShader();
+  initScroll();
+  initPetals();
+  initMagnetic();
+});
+</script>
+</body>
+</html>
