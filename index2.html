@@ -12,6 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Three.js for WebGL Shaders -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     
     <script>
         tailwind.config = {
@@ -455,6 +457,9 @@
 
     <!-- App Logic -->
     <script>
+        // 🔴 UPDATE THIS after deploying server.py to Render.com
+        const BACKEND_URL = 'https://YOUR-APP-NAME.onrender.com';
+
         const formatCurrency = p => `₹${p.toLocaleString('en-IN')}`;
         const query = s => document.querySelector(s);
         
@@ -620,26 +625,87 @@
                 return;
             }
             const payMethod = document.querySelector('input[name="payment_method"]:checked')?.value || 'cod';
-            
+
             if (payMethod === 'online') {
+                // --- REAL RAZORPAY FLOW ---
                 query('#pay-text').innerText = 'Connecting to Razorpay...';
-                query('#pay-loader').style.display='block';
-                setTimeout(() => {
-                    fireToast("Razorpay Checkout Opened! (Mocking success phase...)");
-                    setTimeout(() => {
-                        cart = []; saveCartLocally();
-                        query('#checkout-wrap').style.display = 'none'; query('#success-screen').style.display = 'flex';
-                        query('#order-id').innerText = 'rzp_test_' + Math.floor(100000 + Math.random() * 900000);
-                        query('#pay-text').innerText = 'Complete Purchase';
-                        query('#pay-loader').style.display='none';
-                    }, 2500);
-                }, 800);
+                query('#pay-loader').style.display = 'block';
+                query('#pay-btn').disabled = true;
+
+                const amount = cart.reduce((acc, c) => acc + (c.price * c.qty), 0);
+
+                fetch(`${BACKEND_URL}/create_order`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount, currency: 'INR' })
+                })
+                .then(res => res.json())
+                .then(order => {
+                    const options = {
+                        key: order.key_id,
+                        amount: order.amount,
+                        currency: order.currency,
+                        name: 'Divyansh Fashion',
+                        description: 'Premium Luxury Apparel — The Vault',
+                        order_id: order.order_id,
+                        prefill: {
+                            name: `${query('#fname').value} ${query('#lname').value}`,
+                            email: query('#email').value,
+                        },
+                        notes: { address: query('#address').value },
+                        theme: { color: '#CA8A04' },
+                        handler: function(response) {
+                            // Verify cryptographic signature on backend
+                            fetch(`${BACKEND_URL}/verify_payment`, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature
+                                })
+                            })
+                            .then(r => r.json())
+                            .then(v => {
+                                cart = []; saveCartLocally();
+                                query('#checkout-wrap').style.display = 'none';
+                                query('#success-screen').style.display = 'flex';
+                                query('#order-id').innerText = response.razorpay_payment_id;
+                                fireToast('Payment Verified & Confirmed!');
+                            })
+                            .catch(() => fireToast('Payment received but verification failed. Contact support.'));
+                        },
+                        modal: {
+                            ondismiss: function() {
+                                query('#pay-text').innerText = 'Complete Purchase';
+                                query('#pay-loader').style.display = 'none';
+                                query('#pay-btn').disabled = false;
+                                fireToast('Payment cancelled.');
+                            }
+                        }
+                    };
+                    const rzp = new Razorpay(options);
+                    rzp.open();
+                    query('#pay-loader').style.display = 'none';
+                    query('#pay-text').innerText = 'Complete Purchase';
+                    query('#pay-btn').disabled = false;
+                })
+                .catch(() => {
+                    fireToast('Could not connect to payment server. Please try again.');
+                    query('#pay-text').innerText = 'Complete Purchase';
+                    query('#pay-loader').style.display = 'none';
+                    query('#pay-btn').disabled = false;
+                });
+
             } else {
-                query('#pay-text').style.display='none'; query('#pay-loader').style.display='block';
+                // --- CASH ON DELIVERY FLOW ---
+                query('#pay-text').style.display = 'none';
+                query('#pay-loader').style.display = 'block';
                 setTimeout(() => {
                     cart = []; saveCartLocally();
-                    query('#checkout-wrap').style.display = 'none'; query('#success-screen').style.display = 'flex';
-                    query('#order-id').innerText = Math.floor(100000 + Math.random() * 900000);
+                    query('#checkout-wrap').style.display = 'none';
+                    query('#success-screen').style.display = 'flex';
+                    query('#order-id').innerText = 'COD-' + Math.floor(100000 + Math.random() * 900000);
                 }, 1500);
             }
         };
